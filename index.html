@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siaflex — Service Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --black:#080a0f;--surface:#0d1017;--surface2:#121820;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.1);
+  --green:#2BBD6E;--green-dim:rgba(43,189,110,.12);
+  --text:#f0f2f5;--text-2:#8a9bb0;--text-3:#4a5568;
+  --mono:'Geist Mono',monospace;--serif:'Instrument Serif',serif;--sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--black);font-family:var(--sans);color:var(--text);overflow-x:hidden;min-height:100vh;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;height:64px;
+  background:rgba(8,10,15,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-left{display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:500;color:#000;}
+.logo-text{font-family:var(--mono);font-size:13px;color:var(--text);letter-spacing:.5px;}
+.logo-text span{color:var(--text-3);font-size:11px;display:block;margin-top:1px;}
+.nav-links{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 320px);}
+.nav-links::-webkit-scrollbar{display:none;}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--text-2);cursor:pointer;border:1px solid transparent;background:none;white-space:nowrap;transition:all .2s;-webkit-appearance:none;}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,.05);}
+.nav-btn.active{color:var(--green);background:var(--green-dim);border-color:rgba(43,189,110,.2);}
+.nav-badge{font-size:9px;font-family:var(--mono);background:rgba(43,189,110,.15);color:var(--green);border-radius:3px;padding:1px 5px;}
+
+/* ── LANG TOGGLE ── */
+.lang-toggle{display:flex;border:1px solid var(--border2);border-radius:6px;overflow:hidden;flex-shrink:0;}
+.lang-btn{padding:5px 12px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text-3);background:none;border:none;cursor:pointer;transition:all .15s;-webkit-appearance:none;}
+.lang-btn.active{background:var(--green);color:#000;}
+.lang-btn:hover:not(.active){color:var(--text);background:rgba(255,255,255,.05);}
+
+/* ── PAGES ── */
+main{padding-top:64px;min-height:100vh;}
+.page{display:none;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── HERO ── */
+.hero{padding:96px 40px 72px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:3px;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--green);}
+.hero-h1{font-family:var(--serif);font-size:52px;line-height:1.1;color:var(--text);margin-bottom:20px;font-weight:400;}
+.hero-h1 em{font-style:italic;color:var(--green);}
+.hero-sub{font-size:15px;color:var(--text-2);line-height:1.8;margin-bottom:36px;max-width:440px;font-weight:300;}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#000;font-size:13px;font-weight:600;padding:12px 24px;border-radius:8px;cursor:pointer;border:none;font-family:var(--sans);transition:all .2s;}
+.hero-cta:hover{background:#34d47e;transform:translateY(-1px);}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.stat-cell{background:var(--surface);padding:28px 24px;}
+.stat-num{font-family:var(--serif);font-size:42px;color:var(--text);line-height:1;margin-bottom:6px;}
+.stat-num.green{color:var(--green);}
+.stat-label{font-size:12px;color:var(--text-3);}
+
+/* ── FRAMEWORKS SECTION ── */
+.frameworks-section{padding:0 40px 80px;max-width:1200px;margin:0 auto;}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.section-title{font-family:var(--serif);font-size:36px;font-weight:400;color:var(--text);}
+.section-meta{font-size:11px;color:var(--text-3);font-family:var(--mono);}
+.fw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px 16px 0 0;overflow:hidden;}
+.fw-grid-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;overflow:hidden;}
+.fw-card{background:var(--surface);padding:36px 32px;cursor:pointer;transition:background .2s;position:relative;overflow:hidden;}
+.fw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--fw-color,var(--green));opacity:0;transition:opacity .2s;}
+.fw-card:hover{background:var(--surface2);}
+.fw-card:hover::before{opacity:1;}
+.fw-card.coming::before{opacity:.3;}
+.fw-num{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:2px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+.fw-status{font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:20px;background:var(--green-dim);color:var(--green);border:1px solid rgba(43,189,110,.2);}
+.fw-status.soon{background:rgba(255,255,255,.05);color:var(--text-3);border-color:var(--border);}
+.fw-icon{font-size:26px;margin-bottom:16px;}
+.fw-title{font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:8px;line-height:1.3;font-weight:400;}
+.fw-sub{font-family:var(--mono);font-size:10px;margin-bottom:14px;opacity:.8;}
+.fw-desc{font-size:13px;color:var(--text-2);line-height:1.7;font-weight:300;margin-bottom:20px;}
+.fw-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.fw-tag{font-size:10px;font-family:var(--mono);color:var(--text-3);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:3px 8px;}
+.fw-arrow{position:absolute;bottom:28px;right:28px;font-size:16px;color:var(--text-3);transition:all .2s;opacity:0;}
+.fw-card:hover .fw-arrow{opacity:1;transform:translateX(3px);}
+
+/* ── TIER SECTION ── */
+.tier-section{padding:0 40px 100px;max-width:1200px;margin:0 auto;}
+.eyebrow{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--green);}
+.section-h2{font-family:var(--serif);font-size:36px;font-weight:400;color:var(--text);margin-bottom:10px;}
+.section-p{font-size:14px;color:var(--text-2);font-weight:300;margin-bottom:40px;}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.tier-card{background:var(--surface);padding:40px 32px;}
+.tier-card.featured{background:var(--surface2);}
+.tier-letter{font-family:var(--serif);font-size:64px;color:var(--border2);line-height:1;margin-bottom:20px;}
+.tier-card.featured .tier-letter{color:rgba(43,189,110,.18);}
+.tier-name{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.tier-tag{font-family:var(--mono);font-size:10px;color:var(--green);margin-bottom:20px;}
+.tier-desc{font-size:13px;color:var(--text-2);line-height:1.7;font-weight:300;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.tier-li{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-2);margin-bottom:9px;line-height:1.5;}
+.tier-li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;}
+.rec-badge{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:9px;background:var(--green);color:#000;padding:4px 12px;border-radius:4px;letter-spacing:1px;}
+
+/* ── FW INNER PAGE ── */
+.fw-page{max-width:1000px;margin:0 auto;padding:60px 40px 100px;}
+.fw-page-eyebrow{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:3px;margin-bottom:16px;}
+.fw-page-title{font-family:var(--serif);font-size:48px;color:var(--text);font-weight:400;line-height:1.15;margin-bottom:16px;}
+.fw-page-title em{font-style:italic;}
+.fw-page-sub{font-family:var(--mono);font-size:12px;margin-bottom:20px;opacity:.8;}
+.fw-page-desc{font-size:15px;color:var(--text-2);line-height:1.8;font-weight:300;max-width:640px;margin-bottom:48px;}
+
+/* ── BLOCK ── */
+.block{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:2px;}
+.block-hd{padding:28px 32px;border-bottom:1px solid var(--border);}
+.block-eyebrow{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.block-eyebrow::before{content:'';width:16px;height:1px;background:var(--green);}
+.block-title{font-family:var(--serif);font-size:26px;color:var(--text);font-weight:400;}
+.block-desc{font-size:13px;color:var(--text-2);max-width:560px;line-height:1.7;font-weight:300;margin-top:8px;}
+.block-bd{padding:28px 32px;}
+
+/* ── SERVICE CARDS ── */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.svc-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;transition:border-color .2s;}
+.svc-card:hover{border-color:var(--border2);}
+.svc-icon{font-size:20px;margin-bottom:12px;}
+.svc-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.svc-code{font-family:var(--mono);font-size:10px;color:var(--green);opacity:.7;margin-bottom:10px;}
+.svc-desc{font-size:12px;color:var(--text-2);line-height:1.6;font-weight:300;}
+
+/* ── CONNECTOR ── */
+.connector{display:flex;align-items:center;padding:0 32px;height:52px;background:var(--surface);border-left:1px solid var(--border);border-right:1px solid var(--border);gap:12px;margin-bottom:2px;}
+.con-line{flex:1;height:1px;background:linear-gradient(90deg,var(--green),transparent);opacity:.25;}
+.con-text{font-family:var(--mono);font-size:11px;color:var(--text-3);white-space:nowrap;}
+.con-arrow{color:var(--green);font-size:18px;}
+
+/* ── DELIVERY ── */
+.delivery-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+.d-card{padding:32px;border-right:1px solid var(--border);}
+.d-card:last-child{border-right:none;}
+.d-card.featured{background:rgba(43,189,110,.03);}
+.d-tier{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:2px;margin-bottom:8px;}
+.d-name{font-size:16px;font-weight:600;color:var(--text);margin-bottom:16px;}
+.d-li{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-2);margin-bottom:8px;line-height:1.5;font-weight:300;}
+.d-li::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;}
+
+/* ── LIFECYCLE BAR ── */
+.lc-bar{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px 28px;margin-top:24px;flex-wrap:wrap;gap:12px;}
+.lc-label-wrap{padding-right:24px;border-right:1px solid var(--border);white-space:nowrap;}
+.lc-label-top{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:3px;margin-bottom:4px;}
+.lc-label-name{font-size:13px;font-weight:600;color:var(--text);}
+.lc-phases{display:flex;flex:1;align-items:center;flex-wrap:wrap;}
+.lc-phase{flex:1;min-width:60px;text-align:center;border-right:1px solid var(--border);padding:0 6px;}
+.lc-phase:last-child{border-right:none;}
+.lc-pname{font-size:11px;font-weight:500;color:var(--text-2);}
+.lc-psub{font-size:10px;color:var(--text-3);margin-top:2px;font-family:var(--mono);}
+
+/* ── COMING SOON ── */
+.coming-page{max-width:620px;margin:0 auto;padding:100px 40px;text-align:center;}
+.coming-icon{font-size:48px;margin-bottom:32px;}
+.coming-eyebrow{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:3px;margin-bottom:20px;}
+.coming-title{font-family:var(--serif);font-size:40px;font-weight:400;color:var(--text);margin-bottom:16px;line-height:1.2;}
+.coming-desc{font-size:15px;color:var(--text-2);line-height:1.8;font-weight:300;margin-bottom:40px;}
+.vendors{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:40px;}
+.v-chip{font-size:12px;font-family:var(--mono);color:var(--text-2);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 16px;transition:border-color .2s;}
+.v-chip:hover{border-color:var(--border2);}
+.scope-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;text-align:left;}
+.scope-label{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:2px;margin-bottom:16px;}
+.scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.scope-col{font-size:12px;color:var(--text-2);line-height:1.9;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;gap:48px;}
+  .hero-h1{font-size:42px;}
+  .fw-grid,.fw-grid-bottom{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .nav-left{gap:10px;}
+  .nav-links{max-width:calc(100vw - 200px);}
+  .hero{padding:60px 20px 40px;}
+  .hero-h1{font-size:32px;}
+  .frameworks-section,.tier-section{padding-left:20px;padding-right:20px;}
+  .fw-grid,.fw-grid-bottom{grid-template-columns:1fr;}
+  .tier-grid{grid-template-columns:1fr;}
+  .svc-grid{grid-template-columns:1fr 1fr;}
+  .delivery-grid{grid-template-columns:1fr;}
+  .d-card{border-right:none;border-bottom:1px solid var(--border);}
+  .d-card:last-child{border-bottom:none;}
+  .fw-page{padding:40px 20px 60px;}
+  .fw-page-title{font-size:32px;}
+  .lc-label-wrap{border-right:none;padding-right:0;}
+  .scope-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .svc-grid{grid-template-columns:1fr;}
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .coming-page{padding:60px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo" onclick="showPage('home')">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">
+        SIAFLEX
+        <span class="t" data-en="Service Console" data-tr="Servis Konsolu">Service Console</span>
+      </div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('tr')">TR</button>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" data-page="home" onclick="showPage('home')">
+      <span class="t" data-en="Overview" data-tr="Genel Bakış">Overview</span>
+    </button>
+    <button class="nav-btn" data-page="fw1" onclick="showPage('fw1')">
+      <span class="nav-badge">01</span> IT/OT Infrastructure
+    </button>
+    <button class="nav-btn" data-page="fw2" onclick="showPage('fw2')">
+      <span class="nav-badge">02</span> Security Services
+    </button>
+    <button class="nav-btn" data-page="fw3" onclick="showPage('fw3')">
+      <span class="nav-badge">03</span> CTEM
+    </button>
+    <button class="nav-btn" data-page="fw4" onclick="showPage('fw4')">
+      <span class="nav-badge">04</span> Private Cloud
+    </button>
+    <button class="nav-btn" data-page="fw5" onclick="showPage('fw5')">
+      <span class="nav-badge">05</span> SASE & Secure Access
+    </button>
+    <button class="nav-btn" data-page="fw6" onclick="showPage('fw6')">
+      <span class="nav-badge">06</span> OT/ICS Security
+    </button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════
+     HOME
+════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow t" data-en="Infrastructure Lifecycle Partner" data-tr="Altyapı Yaşam Döngüsü Ortağı">Infrastructure Lifecycle Partner</div>
+      <h1 class="hero-h1">
+        <span class="t" data-en="Where infrastructure<br>meets <em>assurance</em>" data-tr="Altyapının<br><em>güvenceyle</em> buluştuğu yer">Where infrastructure<br>meets <em>assurance</em></span>
+      </h1>
+      <p class="hero-sub t" data-en="Six integrated service frameworks covering every layer of your IT and OT environment — from first assessment to continuous managed operations." data-tr="IT ve OT ortamınızın her katmanını kapsayan altı entegre servis çerçevesi — ilk değerlendirmeden kesintisiz yönetimli operasyonlara kadar.">Six integrated service frameworks covering every layer of your IT and OT environment — from first assessment to continuous managed operations.</p>
+      <button class="hero-cta" onclick="document.querySelector('.frameworks-section').scrollIntoView({behavior:'smooth'})">
+        <span class="t" data-en="Explore Frameworks" data-tr="Framework'leri Keşfet">Explore Frameworks</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div>
+      <div class="hero-stats">
+        <div class="stat-cell">
+          <div class="stat-num green">6</div>
+          <div class="stat-label t" data-en="Service Frameworks" data-tr="Servis Çerçevesi">Service Frameworks</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">30+</div>
+          <div class="stat-label t" data-en="Managed Services" data-tr="Yönetilen Servis">Managed Services</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">3</div>
+          <div class="stat-label t" data-en="Engagement Tiers" data-tr="Hizmet Kademesi">Engagement Tiers</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num green">∞</div>
+          <div class="stat-label t" data-en="Lifecycle Cycles" data-tr="Yaşam Döngüsü">Lifecycle Cycles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frameworks Grid -->
+  <div class="frameworks-section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title t" data-en="Six Frameworks" data-tr="Altı Framework">Six Frameworks</h2>
+        <p style="font-size:14px;color:var(--text-2);font-weight:300;margin-top:6px;" class="t" data-en="Each framework follows the same assessment-first methodology, delivered in three tiers." data-tr="Her framework aynı değerlendirme-öncelikli metodolojiye sahiptir; üç kademe halinde sunulur.">Each framework follows the same assessment-first methodology, delivered in three tiers.</p>
+      </div>
+      <div class="section-meta">SIAFLEX SERVICE CONSOLE · 2026</div>
+    </div>
+
+    <div class="fw-grid">
+      <!-- FW01 -->
+      <div class="fw-card" style="--fw-color:#38bdf8" onclick="showPage('fw1')">
+        <div class="fw-num">
+          <span>FRAMEWORK 01</span>
+          <span class="fw-status t" data-en="Active" data-tr="Aktif">Active</span>
+        </div>
+        <div class="fw-icon">⬡</div>
+        <div class="fw-title">IT/OT Infrastructure Assurance Services</div>
+        <div class="fw-sub t" style="color:#38bdf8" data-en="Infrastructure Lifecycle Partner" data-tr="Altyapı Yaşam Döngüsü Ortağı">Infrastructure Lifecycle Partner</div>
+        <div class="fw-desc t" data-en="Assessment-first approach for every infrastructure layer. Network backbone, firewall, WAF, virtualization — shaped entirely by customer need." data-tr="Her altyapı katmanı için değerlendirme öncelikli yaklaşım. Network omurga, firewall, WAF, sanallaştırma — tamamen müşteri ihtiyacına göre şekillendirilir.">Assessment-first approach for every infrastructure layer. Network backbone, firewall, WAF, virtualization — shaped entirely by customer need.</div>
+        <div class="fw-tags">
+          <span class="fw-tag t" data-en="Assessment" data-tr="Değerlendirme">Assessment</span>
+          <span class="fw-tag">Network</span>
+          <span class="fw-tag t" data-en="Managed Ops" data-tr="Yönetilen Ops">Managed Ops</span>
+        </div>
+        <div class="fw-arrow">→</div>
+      </div>
+
+      <!-- FW02 -->
+      <div class="fw-card" style="--fw-color:#2BBD6E" onclick="showPage('fw2')">
+        <div class="fw-num">
+          <span>FRAMEWORK 02</span>
+          <span class="fw-status t" data-en="Active" data-tr="Aktif">Active</span>
+        </div>
+        <div class="fw-icon">◈</div>
+        <div class="fw-title">Security Services Catalog</div>
+        <div class="fw-sub t" data-en="30 Services · 7 Categories" data-tr="30 Servis · 7 Kategori">30 Services · 7 Categories</div>
+        <div class="fw-desc t" data-en="Comprehensive security service portfolio. Vulnerability management, firewall policy risk, external attack surface — phased delivery roadmap." data-tr="Kapsamlı güvenlik servis portföyü. Zafiyet yönetimi, firewall politika riski, dış saldırı yüzeyi — aşamalı teslimat yol haritası.">Comprehensive security service portfolio. Vulnerability management, firewall policy risk, external attack surface — phased delivery roadmap.</div>
+        <div class="fw-tags">
+          <span class="fw-tag t" data-en="Vulnerability" data-tr="Zafiyet">Vulnerability</span>
+          <span class="fw-tag">Firewall</span>
+          <span class="fw-tag">Compliance</span>
+        </div>
+        <div class="fw-arrow">→</div>
+      </div>
+
+      <!-- FW03 -->
+      <div class="fw-card" style="--fw-color:#818cf8" onclick="showPage('fw3')">
+        <div class="fw-num">
+          <span>FRAMEWORK 03</span>
+          <span class="fw-status t" data-en="Active" data-tr="Aktif">Active</span>
+        </div>
+        <div class="fw-icon">◎</div>
+        <div class="fw-title">Continuous Threat Exposure Management</div>
+        <div class="fw-sub t" style="color:#818cf8" data-en="Gartner CTEM · 5 Phases" data-tr="Gartner CTEM · 5 Aşama">Gartner CTEM · 5 Phases</div>
+        <div class="fw-desc t" data-en="Continuous cycle replacing annual point-in-time assessments. Scoping → Discovery → Prioritization → Validation → Mobilization." data-tr="Yıllık anlık değerlendirmelerin yerini alan sürekli döngü. Kapsam Belirleme → Keşif → Önceliklendirme → Doğrulama → Harekete Geçme.">Continuous cycle replacing annual point-in-time assessments. Scoping → Discovery → Prioritization → Validation → Mobilization.</div>
+        <div class="fw-tags">
+          <span class="fw-tag">CTEM</span><span class="fw-tag">EPSS</span><span class="fw-tag">KEV</span>
+        </div>
+        <div class="fw-arrow">→</div>
+      </div>
+    </div>
+
+    <div class="fw-grid-bottom">
+      <!-- FW04 -->
+      <div class="fw-card coming" style="--fw-color:#f59e0b" onclick="showPage('fw4')">
+        <div class="fw-num">
+          <span>FRAMEWORK 04</span>
+          <span class="fw-status soon t" data-en="In Development" data-tr="Geliştiriliyor">In Development</span>
+        </div>
+        <div class="fw-icon">◱</div>
+        <div class="fw-title">Private Cloud & Virtualization Services</div>
+        <div class="fw-sub t" style="color:#f59e0b" data-en="Vendor Agnostic Platform" data-tr="Vendor Bağımsız Platform">Vendor Agnostic Platform</div>
+        <div class="fw-desc t" data-en="Platform-independent private cloud design, deployment and operations. VMware, HPE, Verge.io, Proxmox — no vendor lock-in." data-tr="Platform bağımsız private cloud tasarım, kurulum ve yönetim. VMware, HPE, Verge.io, Proxmox — vendor bağımlılığı yok.">Platform-independent private cloud design, deployment and operations. VMware, HPE, Verge.io, Proxmox — no vendor lock-in.</div>
+        <div class="fw-tags">
+          <span class="fw-tag">VMware VCF</span><span class="fw-tag">HPE</span><span class="fw-tag">Proxmox</span>
+        </div>
+        <div class="fw-arrow">→</div>
+      </div>
+
+      <!-- FW05 -->
+      <div class="fw-card coming" style="--fw-color:#34d399" onclick="showPage('fw5')">
+        <div class="fw-num">
+          <span>FRAMEWORK 05</span>
+          <span class="fw-status soon t" data-en="In Development" data-tr="Geliştiriliyor">In Development</span>
+        </div>
+        <div class="fw-icon">◈</div>
+        <div class="fw-title">SASE & Secure Access Services</div>
+        <div class="fw-sub" style="color:#34d399">SD-WAN · ZTNA · SWG · CASB</div>
+        <div class="fw-desc t" data-en="Modern secure access architecture replacing legacy VPN. Zero-trust network access with unified SD-WAN and security policy management." data-tr="Eski VPN'in yerini alan modern güvenli erişim mimarisi. Birleşik SD-WAN ve güvenlik politikası yönetimiyle sıfır güven ağ erişimi.">Modern secure access architecture replacing legacy VPN. Zero-trust network access with unified SD-WAN and security policy management.</div>
+        <div class="fw-tags">
+          <span class="fw-tag">FortiSASE</span><span class="fw-tag">ZTNA</span><span class="fw-tag">SD-WAN</span>
+        </div>
+        <div class="fw-arrow">→</div>
+      </div>
+
+      <!-- FW06 -->
+      <div class="fw-card coming" style="--fw-color:#fb923c" onclick="showPage('fw6')">
+        <div class="fw-num">
+          <span>FRAMEWORK 06</span>
+          <span class="fw-status soon t" data-en="In Development" data-tr="Geliştiriliyor">In Development</span>
+        </div>
+        <div class="fw-icon">⬡</div>
+        <div class="fw-title">OT/ICS Security Services</div>
+        <div class="fw-sub" style="color:#fb923c">IEC 62443 · Purdue Model</div>
+        <div class="fw-desc t" data-en="Industrial control system security for energy, manufacturing and critical infrastructure. Non-intrusive passive assessment, IT/OT segmentation." data-tr="Enerji, üretim ve kritik altyapı için endüstriyel kontrol sistemi güvenliği. Üretimi durdurmayan pasif değerlendirme, IT/OT segmentasyonu.">Industrial control system security for energy, manufacturing and critical infrastructure. Non-intrusive passive assessment, IT/OT segmentation.</div>
+        <div class="fw-tags">
+          <span class="fw-tag">IEC 62443</span><span class="fw-tag">NERC CIP</span><span class="fw-tag t" data-en="OT Passive" data-tr="OT Pasif">OT Passive</span>
+        </div>
+        <div class="fw-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier Section -->
+  <div class="tier-section">
+    <div class="eyebrow t" data-en="Universal Engagement Model" data-tr="Evrensel Hizmet Modeli">Universal Engagement Model</div>
+    <h2 class="section-h2 t" data-en="Three ways to work together" data-tr="Birlikte çalışmanın üç yolu">Three ways to work together</h2>
+    <p class="section-p t" data-en="Every framework is delivered in the same three tiers. Start anywhere, scale anytime." data-tr="Her framework aynı üç kademede sunulur. İstediğiniz yerden başlayın, istediğiniz zaman ölçeklendirin.">Every framework is delivered in the same three tiers. Start anywhere, scale anytime.</p>
+
+    <div class="tier-grid">
+      <!-- Tier A -->
+      <div class="tier-card">
+        <div class="tier-letter">A</div>
+        <div class="tier-name">Assess & Report</div>
+        <div class="tier-tag t" data-en="TIER A · ONE-TIME OR ANNUAL" data-tr="KAT A · TEK SEFERLİK VEYA YILLIK">TIER A · ONE-TIME OR ANNUAL</div>
+        <div class="tier-desc t" data-en="Full current state assessment against best practices, vendor guidelines and regulations. Deliverables handed off — customer team executes." data-tr="Best practice standartları, üretici kılavuzları ve regülasyonlara karşı kapsamlı mevcut durum değerlendirmesi. Çıktılar teslim edilir — müşteri ekibi uygular.">Full current state assessment against best practices, vendor guidelines and regulations. Deliverables handed off — customer team executes.</div>
+        <div class="tier-li t" data-en="Current state vs ITIL / ISO 27001 / vendor BP" data-tr="Mevcut durum vs ITIL / ISO 27001 / üretici BP">Current state vs ITIL / ISO 27001 / vendor BP</div>
+        <div class="tier-li t" data-en="Gap report and prioritized action list" data-tr="Gap raporu ve öncelikli aksiyon listesi">Gap report and prioritized action list</div>
+        <div class="tier-li t" data-en="C-Level executive summary + technical detail" data-tr="C-Level yönetici özeti + teknik detay">C-Level executive summary + technical detail</div>
+        <div class="tier-li t" data-en="Annual review option" data-tr="Yıllık kontrol seçeneği">Annual review option</div>
+        <div class="tier-li t" data-en="10 support calls / year" data-tr="10 teknik destek hakkı / yıl">10 support calls / year</div>
+      </div>
+
+      <!-- Tier B -->
+      <div class="tier-card featured">
+        <div class="tier-letter">B</div>
+        <div class="tier-name">Assess + Remediate</div>
+        <div class="tier-tag t" data-en="TIER B · PROJECT-BASED" data-tr="KAT B · PROJE BAZLI">TIER B · PROJECT-BASED</div>
+        <div class="tier-desc t" data-en="Everything in Tier A, plus Siaflex closes the gaps. Project-based remediation with change management, retest and verification." data-tr="Kat A'nın tamamı, artı Siaflex açıkları kapatır. Değişiklik yönetimi, yeniden test ve doğrulama ile proje bazlı iyileştirme.">Everything in Tier A, plus Siaflex closes the gaps. Project-based remediation with change management, retest and verification.</div>
+        <div class="tier-li t" data-en="All Tier A deliverables" data-tr="Tüm Kat A çıktıları dahil">All Tier A deliverables</div>
+        <div class="tier-li t" data-en="Project-based remediation execution" data-tr="Proje bazlı iyileştirme uygulaması">Project-based remediation execution</div>
+        <div class="tier-li t" data-en="Change management and implementation" data-tr="Değişiklik yönetimi ve uygulama">Change management and implementation</div>
+        <div class="tier-li t" data-en="Retest and formal verification" data-tr="Yeniden test ve resmi doğrulama">Retest and formal verification</div>
+        <div class="tier-li t" data-en="Periodic re-assessment cycle" data-tr="Periyodik yeniden değerlendirme döngüsü">Periodic re-assessment cycle</div>
+        <div class="rec-badge t" data-en="RECOMMENDED" data-tr="ÖNERİLEN">RECOMMENDED</div>
+      </div>
+
+      <!-- Tier C -->
+      <div class="tier-card">
+        <div class="tier-letter">C</div>
+        <div class="tier-name">Assess + Managed</div>
+        <div class="tier-tag t" data-en="TIER C · ONGOING SUBSCRIPTION" data-tr="KAT C · SÜREKLİ ABONELİK">TIER C · ONGOING SUBSCRIPTION</div>
+        <div class="tier-desc t" data-en="Operations transferred to Siaflex. Assessment begins the relationship, managed service sustains it. Siaflex becomes the dedicated infrastructure partner." data-tr="Operasyonlar Siaflex'e devredilir. Değerlendirme ilişkiyi başlatır, yönetilen servis sürdürür. Siaflex adanmış altyapı ortağı olur.">Operations transferred to Siaflex. Assessment begins the relationship, managed service sustains it. Siaflex becomes the dedicated infrastructure partner.</div>
+        <div class="tier-li t" data-en="All Tier B included" data-tr="Tüm Kat B dahil">All Tier B included</div>
+        <div class="tier-li t" data-en="Full operational ownership transferred" data-tr="Tam operasyonel sahiplik devredilir">Full operational ownership transferred</div>
+        <div class="tier-li t" data-en="SLA-backed proactive monitoring" data-tr="SLA garantili proaktif izleme">SLA-backed proactive monitoring</div>
+        <div class="tier-li t" data-en="Lifecycle renews automatically" data-tr="Yaşam döngüsü otomatik yenilenir">Lifecycle renews automatically</div>
+        <div class="tier-li t" data-en="Siaflex as dedicated IT/OT partner" data-tr="Siaflex adanmış IT/OT altyapı ortağı">Siaflex as dedicated IT/OT partner</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     FW01 — IT/OT INFRASTRUCTURE
+════════════════════════════════════ -->
+<div class="page" id="page-fw1">
+  <div class="fw-page">
+    <div class="fw-page-eyebrow">FRAMEWORK 01 OF 06</div>
+    <h1 class="fw-page-title">IT/OT Infrastructure<br><em style="color:#38bdf8">Assurance</em> Services</h1>
+    <div class="fw-page-sub t" style="color:#38bdf8" data-en="Infrastructure Lifecycle Partner for IT &amp; OT" data-tr="IT ve OT için Altyapı Yaşam Döngüsü Ortağı">Infrastructure Lifecycle Partner for IT &amp; OT</div>
+    <p class="fw-page-desc t" data-en="Every service relationship begins with a current state assessment of the relevant category — compared against vendor best practices, ITIL, ISO 27001/27031 and sector regulations. One-time, periodic or fully managed." data-tr="Her servis ilişkisi, ilgili kategorinin mevcut durum değerlendirmesiyle başlar — üretici best practice, ITIL, ISO 27001/27031 ve sektör regülasyonlarıyla karşılaştırılır. Tek seferlik, periyodik veya tam yönetimli.">Every service relationship begins with a current state assessment of the relevant category — compared against vendor best practices, ITIL, ISO 27001/27031 and sector regulations. One-time, periodic or fully managed.</p>
+
+    <!-- Assessment Block -->
+    <div class="block" style="border-color:rgba(56,189,248,.15);border-top:2px solid #38bdf8;margin-bottom:2px;">
+      <div class="block-hd">
+        <div class="block-eyebrow t" style="color:#38bdf8" data-en="MANDATORY STARTING POINT" data-tr="ZORUNLU BAŞLANGIÇ NOKTASI">MANDATORY STARTING POINT</div>
+        <div class="block-title t" data-en="Current State Assessment" data-tr="Mevcut Durum Değerlendirmesi">Current State Assessment</div>
+        <div class="block-desc t" data-en="Whatever the customer needs — network, firewall, WAF, virtualization — we first assess the relevant category. Compare against standards, produce gap report, define service scope." data-tr="Müşteri ne talep ederse etsin — network, firewall, WAF, sanallaştırma — önce ilgili kategoriyi değerlendiririz. Standartlarla karşılaştırır, gap raporu üretir, servis kapsamını belirleriz.">Whatever the customer needs — network, firewall, WAF, virtualization — we first assess the relevant category. Compare against standards, produce gap report, define service scope.</div>
+      </div>
+      <div class="block-bd">
+        <div class="svc-grid">
+          <div class="svc-card">
+            <div class="svc-icon">⬡</div>
+            <div class="svc-name">IT/OT Discovery & Inventory</div>
+            <div class="svc-code">SVC-IAS-01</div>
+            <div class="svc-desc t" data-en="Full asset discovery — IP, MAC, OS, OT protocols. Network topology mapping. Foundation for all other services." data-tr="Tam varlık keşfi — IP, MAC, OS, OT protokolleri. Ağ topoloji haritalaması. Tüm servislerin başlangıç noktası.">Full asset discovery — IP, MAC, OS, OT protocols. Network topology mapping. Foundation for all other services.</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-icon">◎</div>
+            <div class="svc-name">Infrastructure Health Check</div>
+            <div class="svc-code">SVC-IAS-05</div>
+            <div class="svc-desc t" data-en="All layers — network, compute, storage, security. Capacity, EoL/EoS status, licensing. C-Level summary + technical report." data-tr="Tüm katmanlar — ağ, işlem, depolama, güvenlik. Kapasite, EoL/EoS durumu, lisanslama. C-Level özeti + teknik rapor.">All layers — network, compute, storage, security. Capacity, EoL/EoS status, licensing. C-Level summary + technical report.</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-icon">◱</div>
+            <div class="svc-name">Network Config Assurance</div>
+            <div class="svc-code">SVC-IAS-02</div>
+            <div class="svc-desc t" data-en="Vendor best practice and standards compliance for switching, routing and WAN infrastructure." data-tr="Switching, routing ve WAN altyapısı için üretici best practice ve standart uyumluluk analizi.">Vendor best practice and standards compliance for switching, routing and WAN infrastructure.</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-icon">◈</div>
+            <div class="svc-name">Network Security Config Assurance</div>
+            <div class="svc-code">SVC-IAS-03</div>
+            <div class="svc-desc t" data-en="Firewall rules, IT/OT segmentation, DMZ design and lateral movement risk — security-focused configuration review." data-tr="Firewall kuralları, IT/OT segmentasyonu, DMZ tasarımı ve yanal hareket riski — güvenlik odaklı konfigürasyon incelemesi.">Firewall rules, IT/OT segmentation, DMZ design and lateral movement risk — security-focused configuration review.</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-icon">◰</div>
+            <div class="svc-name">Virtualization Config Assurance</div>
+            <div class="svc-code">SVC-IAS-04</div>
+            <div class="svc-desc t" data-en="VMware VCF/vSphere hardening — ESXi, vCenter, NSX against CIS benchmarks and VMware Security Guide." data-tr="VMware VCF/vSphere sertleştirme — ESXi, vCenter, NSX; CIS kıyaslamaları ve VMware Güvenlik Kılavuzu'na göre.">VMware VCF/vSphere hardening — ESXi, vCenter, NSX against CIS benchmarks and VMware Security Guide.</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-icon">⊞</div>
+            <div class="svc-name">Compliance & Regulatory Mapping</div>
+            <div class="svc-code">SVC-CRA-01</div>
+            <div class="svc-desc t" data-en="ITIL, ISO 27001/27031, KVKK, BDDK, IEC 62443. Gap analysis against applicable sector requirements." data-tr="ITIL, ISO 27001/27031, KVKK, BDDK, IEC 62443. Sektöre özgü gereklilikler karşısında gap analizi.">ITIL, ISO 27001/27031, KVKK, BDDK, IEC 62443. Gap analysis against applicable sector requirements.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="connector">
+      <div class="con-line"></div>
+      <div class="con-arrow">↓</div>
+      <div class="con-text t" data-en="Assessment complete — customer selects engagement model" data-tr="Değerlendirme tamamlandı — müşteri hizmet modelini seçer">Assessment complete — customer selects engagement model</div>
+      <div class="con-line" style="background:linear-gradient(90deg,transparent,var(--green));"></div>
+    </div>
+
+    <!-- Engagement Model -->
+    <div class="block" style="border-color:rgba(43,189,110,.15);border-bottom:2px solid var(--green);">
+      <div class="block-hd">
+        <div class="block-eyebrow t" data-en="ENGAGEMENT MODEL" data-tr="HİZMET MODELİ">ENGAGEMENT MODEL</div>
+        <div class="block-title t" data-en="Three Tiers — Customer Chooses" data-tr="Üç Kademe — Müşteri Seçer">Three Tiers — Customer Chooses</div>
+        <div class="block-desc t" data-en="Same assessment output, three paths forward. Annual subscription — tier change available at each renewal." data-tr="Aynı değerlendirme çıktısı, üç farklı yol. Yıllık abonelik — her yenilemede kademe değişikliği mümkün.">Same assessment output, three paths forward. Annual subscription — tier change available at each renewal.</div>
+      </div>
+      <div class="block-bd" style="padding:0;">
+        <div class="delivery-grid">
+          <div class="d-card">
+            <div class="d-tier">TIER A</div>
+            <div class="d-name t" data-en="Assess & Report" data-tr="Değerlendir & Raporla">Assess & Report</div>
+            <div class="d-li t" data-en="Full current state assessment" data-tr="Kapsamlı mevcut durum değerlendirmesi">Full current state assessment</div>
+            <div class="d-li t" data-en="Gap report & prioritized action list" data-tr="Gap raporu ve öncelikli aksiyon listesi">Gap report & prioritized action list</div>
+            <div class="d-li t" data-en="C-Level + technical deliverables" data-tr="C-Level + teknik çıktılar">C-Level + technical deliverables</div>
+            <div class="d-li t" data-en="Annual review option" data-tr="Yıllık kontrol seçeneği">Annual review option</div>
+            <div class="d-li t" data-en="10 support calls / year" data-tr="10 teknik destek hakkı / yıl">10 support calls / year</div>
+          </div>
+          <div class="d-card featured">
+            <div class="d-tier">TIER B</div>
+            <div class="d-name t" data-en="Assess + Remediate" data-tr="Değerlendir + İyileştir">Assess + Remediate</div>
+            <div class="d-li t" data-en="All Tier A deliverables" data-tr="Tüm Kat A çıktıları dahil">All Tier A deliverables</div>
+            <div class="d-li t" data-en="Project-based remediation" data-tr="Proje bazlı iyileştirme">Project-based remediation</div>
+            <div class="d-li t" data-en="Change management & implementation" data-tr="Değişiklik yönetimi ve uygulama">Change management & implementation</div>
+            <div class="d-li t" data-en="Retest & verification" data-tr="Yeniden test ve doğrulama">Retest & verification</div>
+            <div class="d-li t" data-en="Periodic re-assessment" data-tr="Periyodik yeniden değerlendirme">Periodic re-assessment</div>
+            <div style="margin-top:20px;">
+              <span style="font-family:var(--mono);font-size:9px;background:var(--green);color:#000;padding:3px 10px;border-radius:4px;" class="t" data-en="RECOMMENDED" data-tr="ÖNERİLEN">RECOMMENDED</span>
+            </div>
+          </div>
+          <div class="d-card">
+            <div class="d-tier">TIER C</div>
+            <div class="d-name t" data-en="Assess + Managed" data-tr="Değerlendir + Yönet">Assess + Managed</div>
+            <div class="d-li t" data-en="All Tier B included" data-tr="Tüm Kat B dahil">All Tier B included</div>
+            <div class="d-li t" data-en="Full operational transfer to Siaflex" data-tr="Siaflex'e tam operasyonel devir">Full operational transfer to Siaflex</div>
+            <div class="d-li t" data-en="SLA-backed proactive monitoring" data-tr="SLA garantili proaktif izleme">SLA-backed proactive monitoring</div>
+            <div class="d-li t" data-en="Lifecycle auto-renewal" data-tr="Yaşam döngüsü otomatik yenileme">Lifecycle auto-renewal</div>
+            <div class="d-li t" data-en="Siaflex as dedicated IT/OT partner" data-tr="Siaflex adanmış IT/OT altyapı ortağı">Siaflex as dedicated IT/OT partner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lifecycle Bar -->
+    <div class="lc-bar">
+      <div class="lc-label-wrap">
+        <div class="lc-label-top t" data-en="CUSTOMER LIFECYCLE" data-tr="MÜŞTERİ YAŞAM DÖNGÜSÜ">CUSTOMER LIFECYCLE</div>
+        <div class="lc-label-name t" data-en="The Journey with Siaflex" data-tr="Siaflex ile Yolculuk">The Journey with Siaflex</div>
+      </div>
+      <div class="lc-phases">
+        <div class="lc-phase">
+          <div class="lc-pname t" data-en="Assess" data-tr="Değerlendir">Assess</div>
+          <div class="lc-psub t" data-en="Discovery" data-tr="Keşif">Discovery</div>
+        </div>
+        <div class="lc-phase">
+          <div class="lc-pname t" data-en="Design" data-tr="Tasarla">Design</div>
+          <div class="lc-psub t" data-en="Scope & Plan" data-tr="Kapsam & Plan">Scope & Plan</div>
+        </div>
+        <div class="lc-phase">
+          <div class="lc-pname t" data-en="Protect" data-tr="Koru">Protect</div>
+          <div class="lc-psub t" data-en="Managed Ops" data-tr="Yönetilen Ops">Managed Ops</div>
+        </div>
+        <div class="lc-phase">
+          <div class="lc-pname t" data-en="Monitor" data-tr="İzle">Monitor</div>
+          <div class="lc-psub t" data-en="Continuous" data-tr="Sürekli">Continuous</div>
+        </div>
+        <div class="lc-phase">
+          <div class="lc-pname t" data-en="Optimize" data-tr="Optimize Et">Optimize</div>
+          <div class="lc-psub t" data-en="Remediate" data-tr="İyileştir">Remediate</div>
+        </div>
+        <div class="lc-phase">
+          <div class="lc-pname t" data-en="Renew" data-tr="Yenile">Renew</div>
+          <div class="lc-psub t" data-en="Annual Cycle" data-tr="Yıllık Döngü">Annual Cycle</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     FW02 — SECURITY SERVICES
+════════════════════════════════════ -->
+<div class="page" id="page-fw2">
+  <div class="fw-page">
+    <div class="fw-page-eyebrow">FRAMEWORK 02 OF 06</div>
+    <h1 class="fw-page-title">Security Services<br><em>Catalog</em></h1>
+    <div class="fw-page-sub t" data-en="30 Services · 7 Categories · MVP to Roadmap" data-tr="30 Servis · 7 Kategori · MVP'den Yol Haritasına">30 Services · 7 Categories · MVP to Roadmap</div>
+    <p class="fw-page-desc t" data-en="Comprehensive security service portfolio with phased delivery. Each service independently selectable, or combined under the CTEM umbrella package." data-tr="Aşamalı teslimat ile kapsamlı güvenlik servis portföyü. Her servis bağımsız seçilebilir veya CTEM çatı paketi altında birleştirilebilir.">Comprehensive security service portfolio with phased delivery. Each service independently selectable, or combined under the CTEM umbrella package.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:24px;">
+      <div style="padding:28px 24px;background:var(--surface);">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:16px;" class="t" data-en="MVP · 0–3 MONTHS" data-tr="MVP · 0–3 AY">MVP · 0–3 MONTHS</div>
+        <div style="font-family:var(--serif);font-size:22px;color:var(--text);margin-bottom:12px;" class="t" data-en="14 Services" data-tr="14 Servis">14 Services</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.8;" class="t" data-en="External &amp; Internal VA · Web App VA · Risk Validation · Health Check · Discovery · Firewall Policy Risk · Managed Firewall · WAF · LB · Network · SD-WAN · Private Cloud · CTEM" data-tr="Dış &amp; İç Zafiyet Analizi · Web Uygulama VA · Risk Doğrulama · Sağlık Kontrolü · Keşif · Firewall Politika Riski · Yönetilen Firewall · WAF · LB · Ağ · SD-WAN · Private Cloud · CTEM">External &amp; Internal VA · Web App VA · Risk Validation · Health Check · Discovery · Firewall Policy Risk · Managed Firewall · WAF · LB · Network · SD-WAN · Private Cloud · CTEM</div>
+      </div>
+      <div style="padding:28px 24px;background:var(--surface);border-left:1px solid var(--border);">
+        <div style="font-family:var(--mono);font-size:10px;color:#84cc16;letter-spacing:2px;margin-bottom:16px;" class="t" data-en="PHASE 2 · 3–6 MONTHS" data-tr="FAZ 2 · 3–6 AY">PHASE 2 · 3–6 MONTHS</div>
+        <div style="font-family:var(--serif);font-size:22px;color:var(--text);margin-bottom:12px;" class="t" data-en="9 Services" data-tr="9 Servis">9 Services</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.8;" class="t" data-en="Attack Surface Monitoring · Brand Monitoring · Net Segmentation · Policy Drift · Vuln Lifecycle Mgmt · IDS/IPS · DDoS Protection · Net Security Config · VCF Hardening" data-tr="Saldırı Yüzeyi İzleme · Marka İzleme · Ağ Segmentasyonu · Politika Sapması · Zafiyet Yaşam Döngüsü · IDS/IPS · DDoS Koruması · Ağ Güvenlik Konfigürasyonu · VCF Sertleştirme">Attack Surface Monitoring · Brand Monitoring · Net Segmentation · Policy Drift · Vuln Lifecycle Mgmt · IDS/IPS · DDoS Protection · Net Security Config · VCF Hardening</div>
+      </div>
+      <div style="padding:28px 24px;background:var(--surface);border-left:1px solid var(--border);">
+        <div style="font-family:var(--mono);font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:16px;" class="t" data-en="ROADMAP · 6–12 MONTHS" data-tr="YOL HARİTASI · 6–12 AY">ROADMAP · 6–12 MONTHS</div>
+        <div style="font-family:var(--serif);font-size:22px;color:var(--text);margin-bottom:12px;" class="t" data-en="7 Services" data-tr="7 Servis">7 Services</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.8;" class="t" data-en="Managed SASE · Regulatory Gap Analysis · Audit-Ready Review · OT/ICS Compliance · Breach Impact Simulation · Attack Path Analysis · IR Retainer" data-tr="Yönetilen SASE · Regülasyon Gap Analizi · Denetim Hazırlık İncelemesi · OT/ICS Uyumluluk · İhlal Etkisi Simülasyonu · Saldırı Yolu Analizi · IR Retainer">Managed SASE · Regulatory Gap Analysis · Audit-Ready Review · OT/ICS Compliance · Breach Impact Simulation · Attack Path Analysis · IR Retainer</div>
+      </div>
+    </div>
+
+    <div style="padding:28px 32px;background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--green);border-radius:12px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:12px;" class="t" data-en="UMBRELLA PACKAGE" data-tr="ÇATI PAKETİ">UMBRELLA PACKAGE</div>
+      <div style="font-family:var(--serif);font-size:22px;color:var(--text);margin-bottom:8px;">SVC-CTEM — Continuous Threat Exposure Management</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.7;font-weight:300;" class="t" data-en="Integrates IAS-01 + VRM-01 + VRM-02 + VRM-05 + EAS-01 + EAS-02 under a single contract. Covers all five CTEM phases with unified reporting and lifecycle management." data-tr="IAS-01 + VRM-01 + VRM-02 + VRM-05 + EAS-01 + EAS-02'yi tek sözleşme altında entegre eder. Birleşik raporlama ve yaşam döngüsü yönetimiyle beş CTEM aşamasının tamamını kapsar.">Integrates IAS-01 + VRM-01 + VRM-02 + VRM-05 + EAS-01 + EAS-02 under a single contract. Covers all five CTEM phases with unified reporting and lifecycle management.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     FW03 — CTEM
+════════════════════════════════════ -->
+<div class="page" id="page-fw3">
+  <div class="fw-page">
+    <div class="fw-page-eyebrow">FRAMEWORK 03 OF 06</div>
+    <h1 class="fw-page-title">Continuous Threat<br><em style="color:#818cf8">Exposure</em> Management</h1>
+    <div class="fw-page-sub t" style="color:#818cf8" data-en="Gartner CTEM Framework · 5 Phases · Perpetual Cycle" data-tr="Gartner CTEM Çerçevesi · 5 Aşama · Sürekli Döngü">Gartner CTEM Framework · 5 Phases · Perpetual Cycle</div>
+    <p class="fw-page-desc t" data-en="Replaces annual point-in-time security assessments with a continuous cycle. Real risk prioritization using EPSS exploit prediction and CISA KEV active threat data." data-tr="Yıllık anlık güvenlik değerlendirmelerinin yerini sürekli bir döngüyle alır. EPSS istismar tahmini ve CISA KEV aktif tehdit verisi kullanılarak gerçek risk önceliklendirmesi yapılır.">Replaces annual point-in-time security assessments with a continuous cycle. Real risk prioritization using EPSS exploit prediction and CISA KEV active threat data.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:24px;">
+      <div style="padding:28px 16px;background:var(--surface);text-align:center;">
+        <div style="font-family:var(--serif);font-size:40px;color:rgba(129,140,248,.2);margin-bottom:12px;line-height:1;">1</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;" class="t" data-en="Scoping" data-tr="Kapsam Belirleme">Scoping</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:12px;font-family:var(--mono);">IAS-01</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.6;" class="t" data-en="Define what to protect. Asset inventory, attack surface identification." data-tr="Neyin korunacağını belirle. Varlık envanteri, saldırı yüzeyi tespiti.">Define what to protect. Asset inventory, attack surface identification.</div>
+      </div>
+      <div style="padding:28px 16px;background:var(--surface);text-align:center;border-left:1px solid var(--border);">
+        <div style="font-family:var(--serif);font-size:40px;color:rgba(129,140,248,.2);margin-bottom:12px;line-height:1;">2</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;" class="t" data-en="Discovery" data-tr="Keşif">Discovery</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:12px;font-family:var(--mono);">VRM-01/02</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.6;" class="t" data-en="Find all vulnerabilities in scope. External, internal, web applications." data-tr="Kapsamdaki tüm zafiyetleri bul. Dış, iç, web uygulamaları.">Find all vulnerabilities in scope. External, internal, web applications.</div>
+      </div>
+      <div style="padding:28px 16px;background:var(--surface);text-align:center;border-left:1px solid var(--border);">
+        <div style="font-family:var(--serif);font-size:40px;color:rgba(129,140,248,.2);margin-bottom:12px;line-height:1;">3</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;" class="t" data-en="Prioritization" data-tr="Önceliklendirme">Prioritization</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:12px;font-family:var(--mono);">EPSS + KEV</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.6;" class="t" data-en="CVSS alone is insufficient. Exploit prediction and active threat data for real risk scoring." data-tr="Tek başına CVSS yeterli değildir. Gerçek risk skoru için istismar tahmini ve aktif tehdit verisi.">CVSS alone is insufficient. Exploit prediction and active threat data for real risk scoring.</div>
+      </div>
+      <div style="padding:28px 16px;background:var(--surface);text-align:center;border-left:1px solid var(--border);">
+        <div style="font-family:var(--serif);font-size:40px;color:rgba(129,140,248,.2);margin-bottom:12px;line-height:1;">4</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;" class="t" data-en="Validation" data-tr="Doğrulama">Validation</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:12px;font-family:var(--mono);">VRM-05</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.6;" class="t" data-en="Nuclei testing eliminates false positives. Theoretical vs actual exploitable risk." data-tr="Nuclei testi yanlış pozitifleri eler. Teorik ile gerçekten istismar edilebilir risk arasındaki fark ortaya çıkar.">Nuclei testing eliminates false positives. Theoretical vs actual exploitable risk.</div>
+      </div>
+      <div style="padding:28px 16px;background:var(--surface);text-align:center;border-left:1px solid var(--border);">
+        <div style="font-family:var(--serif);font-size:40px;color:rgba(129,140,248,.2);margin-bottom:12px;line-height:1;">5</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;" class="t" data-en="Mobilization" data-tr="Harekete Geçme">Mobilization</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:12px;font-family:var(--mono);">VRM-03</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.6;" class="t" data-en="Validated findings become actions. Remediation tracking and closure verification." data-tr="Doğrulanan bulgular aksiyona dönüşür. İyileştirme takibi ve kapanış doğrulaması.">Validated findings become actions. Remediation tracking and closure verification.</div>
+      </div>
+    </div>
+
+    <div style="padding:28px 32px;background:var(--surface);border:1px solid var(--border);border-left:2px solid #818cf8;border-radius:12px;">
+      <div style="font-family:var(--mono);font-size:10px;color:#818cf8;letter-spacing:2px;margin-bottom:8px;" class="t" data-en="KEY DIFFERENTIATION" data-tr="TEMEL FARK">KEY DIFFERENTIATION</div>
+      <div style="font-size:14px;color:var(--text-2);line-height:1.8;font-weight:300;" class="t" data-en="CTEM transforms security from a project into a continuous process. Instead of an annual report — continuous visibility, risk-based prioritization and closure tracking. Siaflex delivers each phase as a standalone service, or the complete cycle under the SVC-CTEM umbrella package." data-tr="CTEM, güvenliği bir projeden sürekli bir sürece dönüştürür. Yıllık rapor yerine — sürekli görünürlük, riske dayalı önceliklendirme ve kapanış takibi. Siaflex her aşamayı bağımsız servis olarak ya da SVC-CTEM çatı paketi altında tam döngü olarak sunar.">CTEM transforms security from a project into a continuous process. Instead of an annual report — continuous visibility, risk-based prioritization and closure tracking. Siaflex delivers each phase as a standalone service, or the complete cycle under the SVC-CTEM umbrella package.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     FW04 — PRIVATE CLOUD
+════════════════════════════════════ -->
+<div class="page" id="page-fw4">
+  <div class="coming-page">
+    <div class="coming-icon">◱</div>
+    <div class="coming-eyebrow t" data-en="FRAMEWORK 04 OF 06 · IN DEVELOPMENT" data-tr="FRAMEWORK 04 / 06 · GELİŞTİRİLİYOR">FRAMEWORK 04 OF 06 · IN DEVELOPMENT</div>
+    <h1 class="coming-title">Private Cloud &<br>Virtualization Services</h1>
+    <p class="coming-desc t" data-en="Platform-independent private cloud design, deployment and managed operations. The customer chooses the platform that fits — we deliver the same quality of service regardless of vendor." data-tr="Platform bağımsız private cloud tasarım, kurulum ve yönetilen operasyonlar. Müşteri en uygun platformu seçer — vendor fark etmeksizin aynı servis kalitesini sunarız.">Platform-independent private cloud design, deployment and managed operations. The customer chooses the platform that fits — we deliver the same quality of service regardless of vendor.</p>
+    <div class="vendors">
+      <div class="v-chip">VMware Cloud Foundation</div>
+      <div class="v-chip">HPE GreenLake</div>
+      <div class="v-chip">Verge.io</div>
+      <div class="v-chip">Proxmox VE</div>
+      <div class="v-chip">Nutanix AHV</div>
+      <div class="v-chip">OpenStack</div>
+    </div>
+    <div class="scope-box">
+      <div class="scope-label t" data-en="PLANNED SCOPE" data-tr="PLANLANAN KAPSAM">PLANNED SCOPE</div>
+      <div class="scope-grid">
+        <div class="scope-col t" data-en="Platform assessment &amp; selection<br>Architecture design &amp; sizing<br>Greenfield deployment<br>Data center integration" data-tr="Platform değerlendirme ve seçimi<br>Mimari tasarım ve boyutlandırma<br>Sıfırdan kurulum<br>Veri merkezi entegrasyonu">Platform assessment &amp; selection<br>Architecture design &amp; sizing<br>Greenfield deployment<br>Data center integration</div>
+        <div class="scope-col t" data-en="Migration from legacy hypervisors<br>Managed cloud operations<br>Lifecycle &amp; capacity management<br>Vendor-agnostic advisory" data-tr="Eski hipervizörlerden geçiş<br>Yönetilen bulut operasyonları<br>Yaşam döngüsü ve kapasite yönetimi<br>Vendor bağımsız danışmanlık">Migration from legacy hypervisors<br>Managed cloud operations<br>Lifecycle &amp; capacity management<br>Vendor-agnostic advisory</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     FW05 — SASE
+════════════════════════════════════ -->
+<div class="page" id="page-fw5">
+  <div class="coming-page">
+    <div class="coming-icon">◈</div>
+    <div class="coming-eyebrow t" data-en="FRAMEWORK 05 OF 06 · IN DEVELOPMENT" data-tr="FRAMEWORK 05 / 06 · GELİŞTİRİLİYOR">FRAMEWORK 05 OF 06 · IN DEVELOPMENT</div>
+    <h1 class="coming-title">SASE & Secure<br>Access Services</h1>
+    <p class="coming-desc t" data-en="Modern secure access replacing legacy VPN. SD-WAN + ZTNA + SWG + CASB as a unified managed service — FortiSASE based, with a vendor-agnostic assessment layer." data-tr="Eski VPN'in yerini alan modern güvenli erişim. SD-WAN + ZTNA + SWG + CASB birleşik yönetilen servis olarak — FortiSASE tabanlı, vendor bağımsız değerlendirme katmanıyla.">Modern secure access replacing legacy VPN. SD-WAN + ZTNA + SWG + CASB as a unified managed service — FortiSASE based, with a vendor-agnostic assessment layer.</p>
+    <div class="vendors">
+      <div class="v-chip">FortiSASE</div>
+      <div class="v-chip">FortiManager</div>
+      <div class="v-chip">ZTNA</div>
+      <div class="v-chip">SD-WAN</div>
+      <div class="v-chip">SWG</div>
+      <div class="v-chip">CASB</div>
+    </div>
+    <div class="scope-box">
+      <div class="scope-label t" data-en="PLANNED SCOPE" data-tr="PLANLANAN KAPSAM">PLANNED SCOPE</div>
+      <div class="scope-grid">
+        <div class="scope-col t" data-en="SASE readiness assessment<br>SD-WAN design &amp; HQ+Branch mgmt<br>ZTNA policy architecture<br>Legacy VPN migration path" data-tr="SASE hazırlık değerlendirmesi<br>SD-WAN tasarım ve HQ+Şube yönetimi<br>ZTNA politika mimarisi<br>Eski VPN geçiş yolu">SASE readiness assessment<br>SD-WAN design &amp; HQ+Branch mgmt<br>ZTNA policy architecture<br>Legacy VPN migration path</div>
+        <div class="scope-col t" data-en="VPN-to-ZTNA migration<br>Unified policy management<br>Managed SASE operations<br>SLA-backed connectivity" data-tr="VPN'den ZTNA'ya geçiş<br>Birleşik politika yönetimi<br>Yönetilen SASE operasyonları<br>SLA garantili bağlantı">VPN-to-ZTNA migration<br>Unified policy management<br>Managed SASE operations<br>SLA-backed connectivity</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     FW06 — OT/ICS
+════════════════════════════════════ -->
+<div class="page" id="page-fw6">
+  <div class="coming-page">
+    <div class="coming-icon">⬡</div>
+    <div class="coming-eyebrow t" data-en="FRAMEWORK 06 OF 06 · IN DEVELOPMENT" data-tr="FRAMEWORK 06 / 06 · GELİŞTİRİLİYOR">FRAMEWORK 06 OF 06 · IN DEVELOPMENT</div>
+    <h1 class="coming-title">OT/ICS Security<br>Services</h1>
+    <p class="coming-desc t" data-en="Industrial control system security for energy, manufacturing, utilities and critical infrastructure. Non-intrusive passive assessment — production environments are never put at risk." data-tr="Enerji, üretim, kamu hizmetleri ve kritik altyapı için endüstriyel kontrol sistemi güvenliği. Üretimi etkilemeyen pasif değerlendirme — üretim ortamları asla riske atılmaz.">Industrial control system security for energy, manufacturing, utilities and critical infrastructure. Non-intrusive passive assessment — production environments are never put at risk.</p>
+    <div class="vendors">
+      <div class="v-chip">IEC 62443</div>
+      <div class="v-chip">NERC CIP</div>
+      <div class="v-chip t" data-en="Purdue Model" data-tr="Purdue Modeli">Purdue Model</div>
+      <div class="v-chip t" data-en="Passive Assessment" data-tr="Pasif Değerlendirme">Passive Assessment</div>
+      <div class="v-chip t" data-en="IT/OT Segmentation" data-tr="IT/OT Segmentasyonu">IT/OT Segmentation</div>
+      <div class="v-chip">Malcolm + FortiGate</div>
+    </div>
+    <div class="scope-box">
+      <div class="scope-label t" data-en="PLANNED SCOPE" data-tr="PLANLANAN KAPSAM">PLANNED SCOPE</div>
+      <div class="scope-grid">
+        <div class="scope-col t" data-en="Passive OT asset discovery<br>IEC 62443 gap assessment<br>IT/OT network segmentation<br>Purdue model compliance review" data-tr="Pasif OT varlık keşfi<br>IEC 62443 gap değerlendirmesi<br>IT/OT ağ segmentasyonu<br>Purdue modeli uyumluluk incelemesi">Passive OT asset discovery<br>IEC 62443 gap assessment<br>IT/OT network segmentation<br>Purdue model compliance review</div>
+        <div class="scope-col t" data-en="OT vulnerability assessment<br>Protocol-aware monitoring<br>Managed OT security operations<br>Incident response for ICS" data-tr="OT zafiyet değerlendirmesi<br>Protokol farkında izleme<br>Yönetilen OT güvenlik operasyonları<br>ICS için olay müdahalesi">OT vulnerability assessment<br>Protocol-aware monitoring<br>Managed OT security operations<br>Incident response for ICS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+let lang = 'en';
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.setAttribute('data-lang', l);
+  // Toggle butonları güncelle
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    if (b.textContent.trim().toLowerCase() === l) b.classList.add('active');
+  });
+  // Tüm çevrilecek elementleri güncelle
+  document.querySelectorAll('.t[data-' + l + ']').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.title = l === 'tr' ? 'Siaflex — Servis Konsolu' : 'Siaflex — Service Console';
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const btn = document.querySelector('[data-page="' + id + '"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+</script>
+</body>
+</html>
