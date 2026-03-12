@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siaflex · Service Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#2BBD6E;--green-bg:#edfaf3;--green-mid:#b8f0d4;
+  --bg:#F8FAFB;--white:#FFFFFF;
+  --h:#1A1A2E;--b:#444444;--m:#8892a4;--m2:#b0bac8;
+  --border:#E5E7EB;--border2:#f0f2f5;
+  --s1:0 1px 3px rgba(0,0,0,.07);--s2:0 4px 16px rgba(0,0,0,.10);--s3:0 12px 40px rgba(0,0,0,.14);
+  --nav:220px;--right:400px;--top:52px;
+  --r:10px;--r2:6px;--r3:4px;
+  --t:200ms ease;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--b);display:flex;flex-direction:column;min-height:100vh;overflow:hidden}
+
+/* TOPBAR */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--top);z-index:200;
+  background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px 0 0;
+}
+.tb-logo{
+  width:var(--nav);min-width:var(--nav);
+  display:flex;align-items:center;gap:9px;padding:0 16px;
+  border-right:1px solid var(--border);height:100%;flex-shrink:0;
+}
+.logo-mark{
+  width:30px;height:30px;background:var(--green);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.logo-texts{display:flex;flex-direction:column;line-height:1}
+.logo-name{font-size:13px;font-weight:700;color:var(--h);letter-spacing:.5px}
+.logo-sub{font-size:10px;color:var(--m);margin-top:2px}
+#breadcrumb{flex:1;display:flex;align-items:center;gap:5px;padding:0 20px;font-size:12px;color:var(--m);overflow:hidden;min-width:0}
+.bc-sep{color:var(--m2);font-size:10px;flex-shrink:0}
+.bc-item{color:var(--m);cursor:pointer;white-space:nowrap;transition:color var(--t);overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.bc-item:hover{color:var(--green)}
+.bc-item.cur{color:var(--h);font-weight:500;cursor:default}
+.bc-item.cur:hover{color:var(--h)}
+.tb-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.lang-toggle{display:flex;gap:3px}
+.lang-btn{
+  padding:4px 9px;border-radius:var(--r3);border:1px solid var(--border);
+  background:transparent;cursor:pointer;font-size:11.5px;font-weight:500;
+  color:var(--m);transition:all var(--t);font-family:'DM Sans',sans-serif;
+}
+.lang-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.tb-version{font-size:10px;color:var(--m2);white-space:nowrap}
+
+/* BODY */
+#body-wrap{display:flex;margin-top:var(--top);height:calc(100vh - var(--top));overflow:hidden}
+
+/* LEFT NAV */
+#left-nav{
+  width:var(--nav);min-width:var(--nav);background:var(--white);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;flex-shrink:0;
+}
+.nav-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.nav-tab{
+  flex:1;padding:10px 4px;font-size:11px;font-weight:600;color:var(--m);
+  text-align:center;cursor:pointer;border-bottom:2px solid transparent;
+  transition:all var(--t);white-space:nowrap;
+}
+.nav-tab:hover{color:var(--h)}
+.nav-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.nav-body{flex:1;overflow-y:auto;padding:8px 8px 12px}
+.nav-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;
+  border-radius:var(--r2);cursor:pointer;transition:all var(--t);
+  margin-bottom:2px;border-left:2px solid transparent;
+}
+.nav-item:hover{background:var(--bg)}
+.nav-item.active{background:var(--green-bg);border-left-color:var(--green)}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background var(--t)}
+.nav-item.active .nav-dot{background:var(--green)}
+.nav-item-label{font-size:12px;font-weight:500;color:var(--h);line-height:1.3;flex:1}
+.nav-item.active .nav-item-label{color:var(--green);font-weight:600}
+.nav-section-hd{font-size:10px;font-weight:700;color:var(--m2);text-transform:uppercase;letter-spacing:1px;padding:10px 10px 5px}
+.nav-cat{
+  padding:8px 10px;border-radius:var(--r2);cursor:pointer;margin-bottom:2px;
+  transition:background var(--t);display:flex;align-items:center;justify-content:space-between;
+}
+.nav-cat:hover{background:var(--bg)}
+.nav-cat-label{font-size:11.5px;font-weight:600;color:var(--h)}
+.nav-cat-chev{font-size:10px;color:var(--m);transition:transform var(--t)}
+.nav-cat.open .nav-cat-chev{transform:rotate(180deg)}
+.nav-cat-children{padding-left:8px}
+.nav-footer{padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0}
+.nav-eng{
+  display:flex;align-items:center;gap:8px;padding:7px 8px;
+  border-radius:var(--r2);cursor:pointer;transition:background var(--t);
+}
+.nav-eng:hover{background:var(--bg)}
+.eng-letters{display:flex;gap:3px}
+.eng-l{
+  width:18px;height:18px;border-radius:3px;background:var(--green);
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;
+}
+.nav-eng-label{font-size:11.5px;font-weight:500;color:var(--b)}
+
+/* CENTER */
+#center{flex:1;overflow-y:auto;min-width:0}
+.ci{padding:28px 36px 80px;max-width:860px}
+.fw-header{padding-bottom:22px;border-bottom:1px solid var(--border);margin-bottom:22px}
+.fw-eyebrow{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--m);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.fw-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.fw-title{font-size:24px;font-weight:700;color:var(--h);margin-bottom:4px;line-height:1.2}
+.fw-desc{font-size:13.5px;color:var(--b);line-height:1.65;max-width:620px;margin-top:8px}
+.fw-stats{display:flex;gap:28px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border2)}
+.fw-stat-val{font-size:22px;font-weight:700;color:var(--h)}
+.fw-stat-label{font-size:10px;color:var(--m);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+/* LIFECYCLE */
+.lc-wrap{margin-bottom:22px}
+.lc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--m);margin-bottom:10px}
+.lc-track{display:flex;align-items:center;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.lc-track::-webkit-scrollbar{display:none}
+.lc-step-wrap{display:flex;align-items:center;flex-shrink:0;position:relative}
+.lc-pill{
+  display:flex;align-items:center;gap:7px;padding:7px 13px;
+  border-radius:20px;border:1.5px solid transparent;background:var(--white);
+  box-shadow:var(--s1);cursor:pointer;transition:all var(--t);
+}
+.lc-pill:hover{box-shadow:var(--s2);transform:translateY(-1px)}
+.lc-num{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.lc-name{font-size:11px;font-weight:500;color:var(--h);white-space:nowrap}
+.lc-arrow{color:var(--m2);font-size:12px;padding:0 3px;flex-shrink:0}
+.lc-tooltip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--h);color:#fff;font-size:11px;line-height:1.4;
+  padding:7px 10px;border-radius:var(--r2);max-width:220px;white-space:normal;text-align:center;
+  box-shadow:var(--s3);z-index:50;pointer-events:none;
+  opacity:0;transition:opacity var(--t);
+}
+.lc-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--h)}
+.lc-step-wrap:hover .lc-tooltip{opacity:1}
+
+/* ACCORDION */
+.acc-item{border:1px solid var(--border);border-radius:var(--r);background:var(--white);margin-bottom:8px;overflow:hidden;box-shadow:var(--s1);transition:box-shadow var(--t)}
+.acc-item:hover{box-shadow:var(--s2)}
+.acc-head{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;user-select:none}
+.acc-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.acc-info{flex:1;min-width:0}
+.acc-name{font-size:13.5px;font-weight:600;color:var(--h);margin-bottom:2px}
+.acc-desc-short{font-size:12px;color:var(--m);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.cnt-badge{padding:2px 9px;border-radius:10px;background:var(--bg);border:1px solid var(--border);font-size:10.5px;font-weight:600;color:var(--m)}
+.acc-chev{color:var(--m);font-size:11px;transition:transform var(--t)}
+.acc-item.open .acc-chev{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height 320ms cubic-bezier(.4,0,.2,1)}
+.acc-item.open .acc-body{max-height:3000px}
+.acc-desc-full{padding:12px 18px 14px;font-size:13px;color:var(--b);line-height:1.6;border-top:1px solid var(--border2)}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 18px 18px}
+
+/* SERVICE CARD */
+.svc-card{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
+  padding:13px 14px;cursor:pointer;transition:all var(--t);position:relative;
+}
+.svc-card:hover{background:var(--white);box-shadow:var(--s2);border-color:var(--green-mid);transform:translateY(-1px)}
+.svc-card.mc{border-left:3px solid var(--green)}
+.sc-name{font-size:13px;font-weight:600;color:var(--h);margin-bottom:3px;line-height:1.35}
+.sc-desc{font-size:11.5px;color:var(--m);line-height:1.45}
+.sc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;gap:6px;flex-wrap:wrap}
+.td-dots{display:flex;gap:3px}
+.td{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;background:var(--green);color:#fff}
+.td.off{background:var(--border2);color:var(--m)}
+.sc-tags{display:flex;gap:4px;flex-wrap:wrap}
+.sc-tag{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;background:var(--green-bg);color:var(--green);border:1px solid var(--green-mid)}
+.sc-tag.mt{background:#fff7ed;color:#d97706;border-color:#fde68a}
+.sc-tag.rt{background:#f5f3ff;color:#7c3aed;border-color:#ddd6fe}
+.sc-tag.ct{background:#eff6ff;color:#3b82f6;border-color:#bfdbfe}
+
+/* MANAGED SERVICES PAGE */
+.ms-cat{margin-bottom:26px}
+.ms-cat-title{font-size:14px;font-weight:700;color:var(--h);padding-bottom:10px;border-bottom:2px solid var(--border);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ms-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ms-note{margin-top:24px;padding:12px 16px;border-radius:var(--r2);background:var(--green-bg);border:1px solid var(--green-mid);font-size:12.5px;color:var(--b);line-height:1.55}
+
+/* RIGHT PANEL */
+#overlay{position:fixed;inset:0;background:rgba(26,26,46,.3);z-index:300;opacity:0;pointer-events:none;transition:opacity var(--t);backdrop-filter:blur(2px)}
+#overlay.on{opacity:1;pointer-events:all}
+#rp{
+  position:fixed;top:var(--top);right:0;height:calc(100vh - var(--top));
+  width:var(--right);background:var(--white);border-left:1px solid var(--border);
+  z-index:301;transform:translateX(100%);transition:transform 280ms cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;box-shadow:var(--s3);
+}
+#rp.open{transform:translateX(0)}
+.rp-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rp-title{font-size:16px;font-weight:700;color:var(--h);line-height:1.3;flex:1}
+.rp-close{width:28px;height:28px;border-radius:var(--r2);border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--m);transition:all var(--t);flex-shrink:0;font-family:'DM Sans',sans-serif}
+.rp-close:hover{background:var(--bg);color:var(--h)}
+.rp-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.rp-badge{padding:2px 9px;border-radius:10px;font-size:11px;font-weight:500;background:var(--bg);border:1px solid var(--border);color:var(--m)}
+.rp-body{flex:1;overflow-y:auto;padding:18px 22px}
+.rp-sec{margin-bottom:18px}
+.rp-sec-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--m);margin-bottom:8px}
+.rp-desc{font-size:13px;color:var(--b);line-height:1.65}
+.rp-ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.rp-ul li{font-size:12.5px;color:var(--b);padding-left:14px;position:relative;line-height:1.5}
+.rp-ul li::before{content:'→';position:absolute;left:0;color:var(--green);font-size:10px;top:2px}
+.rp-tools{display:flex;flex-wrap:wrap;gap:5px}
+.rp-tool{padding:3px 9px;border-radius:var(--r3);background:var(--bg);border:1px solid var(--border);font-size:11px;color:var(--b)}
+.rp-tiers{display:flex;gap:7px}
+.rp-tier{flex:1;padding:10px 8px;border-radius:var(--r2);border:1.5px solid var(--border);text-align:center}
+.rp-tier.on{background:var(--green-bg);border-color:var(--green-mid)}
+.rp-tier-ltr{font-size:17px;font-weight:700;color:var(--h)}
+.rp-tier.on .rp-tier-ltr{color:var(--green)}
+.rp-tier-name{font-size:9.5px;color:var(--m);margin-top:2px;line-height:1.3}
+.rp-tier.on .rp-tier-name{color:var(--b)}
+.rp-mnote{padding:10px 12px;border-radius:var(--r2);background:#fff7ed;border:1px solid #fde68a;font-size:12px;color:#92400e;line-height:1.5;margin-bottom:14px}
+.rp-footer{padding:14px 22px;border-top:1px solid var(--border);flex-shrink:0}
+.btn-cta{width:100%;padding:12px;border-radius:var(--r2);background:var(--green);border:none;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--t)}
+.btn-cta:hover{background:#22a55e;box-shadow:0 4px 14px rgba(43,189,110,.35)}
+
+/* ENGAGEMENT MODAL */
+#em{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;background:rgba(26,26,46,.4);opacity:0;pointer-events:none;transition:opacity var(--t);backdrop-filter:blur(3px)}
+#em.on{opacity:1;pointer-events:all}
+.em-box{background:var(--white);border-radius:14px;padding:28px 30px;max-width:520px;width:90%;box-shadow:var(--s3);transform:translateY(6px);transition:transform var(--t)}
+#em.on .em-box{transform:translateY(0)}
+.em-title{font-size:17px;font-weight:700;color:var(--h);margin-bottom:4px}
+.em-sub{font-size:12.5px;color:var(--m);margin-bottom:20px}
+.em-tiers{display:flex;flex-direction:column;gap:10px}
+.em-tier{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:var(--r2);border:1px solid var(--border)}
+.em-ltr{width:34px;height:34px;border-radius:7px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.em-tier-name{font-size:13px;font-weight:600;color:var(--h);margin-bottom:3px}
+.em-tier-desc{font-size:12px;color:var(--b);line-height:1.5}
+.em-foot{margin-top:18px;text-align:right}
+.em-close-btn{padding:8px 18px;border-radius:var(--r2);border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:12.5px;font-weight:500;color:var(--b);font-family:'DM Sans',sans-serif;transition:all var(--t)}
+.em-close-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;text-align:center;gap:10px}
+.empty-icon{font-size:36px;opacity:.2}
+.empty-title{font-size:15px;font-weight:600;color:var(--h)}
+.empty-desc{font-size:13px;color:var(--m);max-width:300px;line-height:1.6}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+@media(max-width:768px){
+  :root{--nav:0px;--right:100vw}
+  .tb-logo{display:none}
+  #left-nav{position:fixed;left:-260px;width:260px;z-index:150;transition:left var(--t)}
+  #left-nav.mobile-open{left:0}
+  .cards-grid,.ms-cards{grid-template-columns:1fr}
+  .ci{padding:16px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div class="tb-logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-texts">
+      <span class="logo-name">SIAFLEX</span>
+      <span class="logo-sub" id="lbl-cat">Service Catalog</span>
+    </div>
+  </div>
+  <div id="breadcrumb"><span class="bc-item cur">Siaflex</span></div>
+  <div class="tb-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('tr')">TR</button>
+    </div>
+    <span class="tb-version">v7.0 · 2026</span>
+  </div>
+</header>
+
+<div id="body-wrap">
+  <nav id="left-nav">
+    <div class="nav-tabs">
+      <div class="nav-tab active" id="tab-fw" onclick="switchTab('fw')">Frameworks</div>
+      <div class="nav-tab" id="tab-dom" onclick="switchTab('dom')">Domains</div>
+      <div class="nav-tab" id="tab-ms" onclick="switchTab('ms')">Managed</div>
+    </div>
+    <div class="nav-body" id="nav-body"></div>
+    <div class="nav-footer">
+      <div class="nav-eng" onclick="showEM()">
+        <div class="eng-letters"><div class="eng-l">A</div><div class="eng-l">B</div><div class="eng-l">C</div></div>
+        <span class="nav-eng-label" id="lbl-eng">Engagement Tiers</span>
+      </div>
+    </div>
+  </nav>
+  <main id="center">
+    <div class="ci" id="ci">
+      <div class="empty">
+        <div class="empty-icon">◈</div>
+        <div class="empty-title" id="et">Select a Framework</div>
+        <div class="empty-desc" id="ed">Choose a framework from the left panel to explore domains and services.</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="overlay" onclick="closeRP()"></div>
+
+<div id="rp">
+  <div class="rp-head">
+    <div style="flex:1">
+      <div class="rp-title" id="rp-title"></div>
+      <div class="rp-badges" id="rp-badges"></div>
+    </div>
+    <button class="rp-close" onclick="closeRP()">✕</button>
+  </div>
+  <div class="rp-body" id="rp-body"></div>
+  <div class="rp-footer">
+    <button class="btn-cta" id="rp-cta">Request Proposal</button>
+  </div>
+</div>
+
+<div id="em" onclick="if(event.target===this)hideEM()">
+  <div class="em-box">
+    <div class="em-title" id="em-title">Engagement Tiers</div>
+    <div class="em-sub" id="em-sub">All services are available in one or more engagement tiers.</div>
+    <div class="em-tiers" id="em-tbody"></div>
+    <div class="em-foot"><button class="em-close-btn" id="em-close" onclick="hideEM()">Close</button></div>
+  </div>
+</div>
+
+<script>
+var lang='en';
+function L(o){return typeof o==='object'?(lang==='en'?o.en:o.tr):o;}
+
+var TIERS={
+  A:{name:{en:'Assess & Report',tr:'Değerlendir & Raporla'},
+     desc:{en:'Assessment + gap report + remediation roadmap + C-Level executive summary. Optional annual refresh cycle.',
+           tr:'Değerlendirme + gap raporu + iyileştirme yol haritası + C-Level yönetici özeti. Opsiyonel yıllık yenileme döngüsü.'}},
+  B:{name:{en:'Assess + Remediate',tr:'Değerlendir + İyileştir'},
+     desc:{en:'All Tier A deliverables plus Siaflex executes remediation. Project-based engagement with retest included.',
+           tr:'Tüm Tier A çıktıları artı Siaflex iyileştirmeyi uygular. Retest dahil proje bazlı çalışma.'}},
+  C:{name:{en:'Assess + Managed Operations',tr:'Değerlendir + Yönetilen Operasyonlar'},
+     desc:{en:'All Tier B deliverables plus ongoing operations transferred to Siaflex. SLA-backed continuous service cycle.',
+           tr:'Tüm Tier B çıktıları artı operasyonlar Siaflex\'e devredilir. SLA garantili sürekli servis döngüsü.'}}
+};
+
+var MCATS=[
+  {id:'network-ops',name:{en:'Network Operations',tr:'Ağ Operasyonları'},icon:'🔀'},
+  {id:'security-ops',name:{en:'Security Operations',tr:'Güvenlik Operasyonları'},icon:'🛡'},
+  {id:'infra-ops',name:{en:'Infrastructure Operations',tr:'Altyapı Operasyonları'},icon:'◉'}
+];
+
+var FW=[
+{id:'fw-01',
+ name:{en:'Secure Infrastructure Lifecycle',tr:'Güvenli Altyapı Yaşam Döngüsü'},
+ tagline:{en:'Vendor-Agnostic Assessment, Design & Managed Operations',tr:'Vendor Bağımsız Değerlendirme, Tasarım ve Yönetilen Operasyonlar'},
+ desc:{en:'Every engagement starts with current-state assessment against vendor best practices, CIS benchmarks, ITIL and ISO 27001/27031. Security-first design across all infrastructure layers — regardless of vendor.',
+       tr:'Her ilişki; vendor best practice, CIS benchmark, ITIL ve ISO 27001/27031\'e karşı mevcut durum değerlendirmesiyle başlar. Tüm altyapı katmanlarında güvenlik öncelikli tasarım.'},
+ color:'#0ea5e9',
+ lc:[
+  {s:'1',n:{en:'Regulatory & Security Baseline',tr:'Regülasyon & Güvenlik Baseline'},d:{en:'Define applicable regulations, frameworks and security standards governing the engagement scope.',tr:'Kapsamı yöneten ilgili düzenlemeleri, çerçeveleri ve güvenlik standartlarını belirleyin.'}},
+  {s:'2',n:{en:'Discovery & Inventory',tr:'Keşif & Envanter'},d:{en:'Automated and manual discovery of all assets within scope.',tr:'Kapsam dahilindeki tüm varlıkların otomatik ve manuel keşfi.'}},
+  {s:'3',n:{en:'Domain Catalog Selection',tr:'Domain Kataloğu Seçimi'},d:{en:'Customer selects which infrastructure domains to assess from the full catalog.',tr:'Müşteri, tam katalogdan hangi altyapı domain\'lerini değerlendireceğini seçer.'}},
+  {s:'4',n:{en:'Domain Assessment',tr:'Domain Değerlendirmesi'},d:{en:'In-depth assessment of each selected domain against benchmarks and best practices.',tr:'Seçilen her domain\'in benchmark ve best practice\'lere karşı derinlemesine değerlendirmesi.'}},
+  {s:'5',n:{en:'Gap Analysis & Findings',tr:'Gap Analizi & Bulgular'},d:{en:'Prioritized gap report with risk scoring, technical findings and C-Level executive summary.',tr:'Risk skorlaması, teknik bulgular ve C-Level yönetici özeti ile önceliklendirilmiş gap raporu.'}},
+  {s:'6',n:{en:'Service Delivery',tr:'Servis Teslimi'},d:{en:'Customer chooses tier: A (report), B (remediate), C (managed operations).',tr:'Müşteri kademeleri seçer: A (rapor), B (iyileştirme), C (yönetilen operasyonlar).'}}
+ ],
+ domains:[
+  {id:'dom-net',icon:'🔀',name:{en:'Network',tr:'Ağ'},
+   desc:{en:'LAN/WAN/DC architecture, routing, switching, VLAN segmentation, DDI. Campus, branch and data center layers.',tr:'LAN/WAN/DC mimarisi, routing, switching, VLAN segmentasyonu, DDI. Kampüs, şube ve veri merkezi katmanları.'},
+   sds:[
+    {name:{en:'Datacenter Network Infrastructure',tr:'Veri Merkezi Ağ Altyapısı'},
+     desc:{en:'Assessment and design of data center network — spine/leaf topology, east-west segmentation, fabric architecture.',tr:'Veri merkezi ağ değerlendirme ve tasarımı — spine/leaf topoloji, doğu-batı segmentasyonu, fabric mimarisi.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['Spine/leaf architecture review and gap analysis','East-west traffic segmentation assessment','Data center fabric topology mapping','Uplink redundancy and failover validation','Vendor best practice compliance check'],tr:['Spine/leaf mimari review ve gap analizi','Doğu-batı trafik segmentasyon değerlendirmesi','Veri merkezi fabric topoloji haritalama','Uplink yedekliliği ve failover doğrulaması','Vendor best practice uyumluluk kontrolü']},
+     tools:['Nipper','CIS-CAT','Nmap','Vendor CLI/API'],
+     dlv:{en:['DC network architecture gap report','CIS benchmark scorecard','Remediation priority plan'],tr:['DC ağ mimarisi gap raporu','CIS benchmark puan kartı','İyileştirme öncelik planı']}},
+    {name:{en:'Campus Network Infrastructure',tr:'Kampüs Ağ Altyapısı'},
+     desc:{en:'Campus LAN assessment — access, distribution, core layers, VLAN design, STP, stacking and uplink redundancy.',tr:'Kampüs LAN değerlendirmesi — erişim, dağıtım, çekirdek katmanlar, VLAN tasarımı, STP, stacking ve uplink yedekliliği.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['Access/distribution/core layer review','VLAN design and segmentation adequacy','STP and loop prevention validation','Switch stacking and redundancy assessment','Port security and access control review'],tr:['Erişim/dağıtım/çekirdek katman review','VLAN tasarımı ve segmentasyon yeterliliği','STP ve döngü önleme doğrulaması','Switch stacking ve yedeklilik değerlendirmesi','Port güvenliği ve erişim kontrolü review']},
+     tools:['Nipper','CIS-CAT','Cisco Auditor','Vendor CLI/API'],
+     dlv:{en:['Campus network gap report','VLAN segmentation assessment','CIS compliance report'],tr:['Kampüs ağ gap raporu','VLAN segmentasyon değerlendirmesi','CIS uyumluluk raporu']}},
+    {name:{en:'Wi-Fi Network Architecture',tr:'Wi-Fi Ağ Mimarisi'},
+     desc:{en:'Wireless assessment — coverage, capacity, security configuration, rogue AP detection, guest network isolation.',tr:'Kablosuz değerlendirme — kapsama, kapasite, güvenlik konfigürasyonu, sahte AP tespiti, misafir ağ izolasyonu.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['WLAN controller and AP configuration review','Coverage and capacity planning assessment','WPA3/WPA2 security configuration audit','Guest and corp network isolation validation','Rogue AP detection'],tr:['WLAN controller ve AP konfigürasyon review','Kapsama ve kapasite planlama değerlendirmesi','WPA3/WPA2 güvenlik konfigürasyon denetimi','Misafir ve kurumsal ağ izolasyon doğrulaması','Sahte AP tespiti']},
+     tools:['Ekahau','Nmap','Vendor CLI/API','Custom Scripts'],
+     dlv:{en:['Wi-Fi security gap report','Coverage and capacity assessment','Remediation recommendations'],tr:['Wi-Fi güvenlik gap raporu','Kapsama ve kapasite değerlendirmesi','İyileştirme önerileri']}},
+    {name:{en:'SD-WAN',tr:'SD-WAN'},
+     desc:{en:'SD-WAN transport and connectivity assessment — policy design, link quality, failover, branch connectivity.',tr:'SD-WAN taşıma ve bağlantı değerlendirmesi — politika tasarımı, bağlantı kalitesi, failover, şube bağlantısı.'},
+     tiers:['A','B','C'],managed:true,managedCategory:'network-ops',cr:[],
+     scope:{en:['SD-WAN policy and routing configuration review','Link quality and performance assessment','Failover and SLA monitoring validation','Branch connectivity and segmentation review','Underlay/overlay architecture assessment'],tr:['SD-WAN politika ve routing konfigürasyon review','Bağlantı kalitesi ve performans değerlendirmesi','Failover ve SLA izleme doğrulaması','Şube bağlantısı ve segmentasyon review','Underlay/overlay mimari değerlendirmesi']},
+     tools:['FortiManager','Viptela','VeloCloud','Custom Scripts'],
+     dlv:{en:['SD-WAN architecture gap report','Link performance assessment','Managed ops SLA report (Tier C)'],tr:['SD-WAN mimari gap raporu','Bağlantı performans değerlendirmesi','Yönetilen ops SLA raporu (Tier C)']}},
+    {name:{en:'Routing & WAN Resiliency',tr:'Routing ve WAN Dayanıklılığı'},
+     desc:{en:'Routing protocol security, WAN redundancy, BGP/OSPF configuration review and failover validation.',tr:'Routing protokolü güvenliği, WAN yedekliliği, BGP/OSPF konfigürasyon review ve failover doğrulaması.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['BGP/OSPF authentication and security review','WAN link redundancy and failover validation','Route summarization and leak prevention','QoS and traffic engineering review','ISP diversity and failover testing'],tr:['BGP/OSPF kimlik doğrulama ve güvenlik review','WAN link yedekliliği ve failover doğrulaması','Route özetleme ve sızıntı önleme','QoS ve trafik mühendisliği review','ISP çeşitliliği ve failover testi']},
+     tools:['Nipper','CIS-CAT','Cisco Auditor','FortiManager'],
+     dlv:{en:['Routing and WAN gap report','Failover test results','Remediation plan'],tr:['Routing ve WAN gap raporu','Failover test sonuçları','İyileştirme planı']}},
+    {name:{en:'Managed Network Operations',tr:'Yönetilen Ağ Operasyonları'},
+     desc:{en:'Ongoing network monitoring, configuration management, change management and incident response. SLA-backed NOC service.',tr:'Sürekli ağ izleme, konfigürasyon yönetimi, değişiklik yönetimi ve olay müdahalesi. SLA destekli NOC hizmeti.'},
+     tiers:['C'],managed:true,managedCategory:'network-ops',cr:[],
+     scope:{en:['24/7 network monitoring and alerting','Configuration backup and change management','Firmware/patch lifecycle management','Incident response and escalation','Monthly performance and capacity reporting'],tr:['7/24 ağ izleme ve alarm','Konfigürasyon yedekleme ve değişiklik yönetimi','Firmware/patch yaşam döngüsü yönetimi','Olay müdahalesi ve eskalasyon','Aylık performans ve kapasite raporlama']},
+     tools:['PRTG','FortiManager','Oxidized','NetBox'],
+     dlv:{en:['Monthly operations report','Change log and audit trail','SLA performance dashboard'],tr:['Aylık operasyon raporu','Değişiklik logu ve denetim izi','SLA performans panosu']}}
+   ]},
+  {id:'dom-sec',icon:'🛡',name:{en:'Network Security',tr:'Ağ Güvenliği'},
+   desc:{en:'Firewall policy management, network segmentation, DMZ architecture, IPS/IDS and security-focused configuration hardening.',tr:'Firewall politika yönetimi, ağ segmentasyonu, DMZ mimarisi, IPS/IDS ve güvenlik odaklı konfigürasyon sıkılaştırma.'},
+   sds:[
+    {name:{en:'Firewall',tr:'Firewall'},
+     desc:{en:'Firewall architecture assessment — placement, zone design, HA configuration and operational baseline.',tr:'Firewall mimari değerlendirmesi — yerleşim, zone tasarımı, HA konfigürasyonu ve operasyonel baseline.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['Firewall placement and zone architecture review','HA configuration and failover validation','Management access and out-of-band review','Logging and monitoring configuration audit','CIS benchmark compliance check'],tr:['Firewall yerleşimi ve zone mimari review','HA konfigürasyonu ve failover doğrulaması','Yönetim erişimi ve out-of-band review','Loglama ve izleme konfigürasyon denetimi','CIS benchmark uyumluluk kontrolü']},
+     tools:['Nipper','CIS-CAT','FortiAnalyzer','Vendor CLI'],
+     dlv:{en:['Firewall architecture gap report','CIS benchmark scorecard','Remediation priority plan'],tr:['Firewall mimari gap raporu','CIS benchmark puan kartı','İyileştirme öncelik planı']}},
+    {name:{en:'Firewall Assurance & Policy Risk Management',tr:'Firewall Güvencesi & Politika Risk Yönetimi'},
+     desc:{en:'Full rule-set audit: shadow, redundant and overpermissive rules. Risk scoring against CIS/NIST. Cleanup recommendations.',tr:'Tam rule-set denetimi: shadow, gereksiz ve aşırı izinli kurallar. CIS/NIST karşı risk skorlaması.'},
+     tiers:['A','B','C'],managed:false,cr:['fw-04'],
+     scope:{en:['Complete rule-set export and automated parsing','Shadow and redundant rule identification','Overpermissive rule detection and risk scoring','Policy compliance vs CIS/NIST guidelines','Rule lifecycle and expiry review'],tr:['Tam rule-set export ve otomatik parse','Shadow ve gereksiz kural tespiti','Aşırı izinli kural tespiti ve risk skorlaması','CIS/NIST kılavuzlarına karşı politika uyumu','Kural yaşam döngüsü ve son kullanma tarihi review']},
+     tools:['Nipper','Tufin','AlgoSec','Custom Parser'],
+     dlv:{en:['Rule risk report with scoring','Cleanup recommendation list','Compliance gap report'],tr:['Skorlanmış kural risk raporu','Temizlik öneri listesi','Uyumluluk gap raporu']}},
+    {name:{en:'WAF',tr:'WAF'},
+     desc:{en:'Web Application Firewall assessment — rule-set effectiveness, false positive rates, OWASP Top 10 policy coverage.',tr:'Web Uygulama Güvenlik Duvarı değerlendirmesi — rule-set etkinliği, false positive oranları, OWASP Top 10 politika kapsamı.'},
+     tiers:['A','B','C'],managed:true,managedCategory:'security-ops',cr:[],
+     scope:{en:['WAF rule-set and policy review vs OWASP Top 10','False positive rate analysis and tuning recommendations','SSL/TLS offload configuration audit','Backend protection adequacy review','Logging and alerting configuration check'],tr:['WAF rule-set ve politika review karşı OWASP Top 10','False positive oran analizi ve ayar önerileri','SSL/TLS offload konfigürasyon denetimi','Backend koruma yeterlilik review','Loglama ve alarm konfigürasyon kontrolü']},
+     tools:['FortiWeb','F5 ASM','ModSecurity','Custom Scripts'],
+     dlv:{en:['WAF security gap report','OWASP coverage assessment','Tuning recommendations'],tr:['WAF güvenlik gap raporu','OWASP kapsama değerlendirmesi','Ayar önerileri']}},
+    {name:{en:'Secure SD-WAN',tr:'Güvenli SD-WAN'},
+     desc:{en:'Security policy view on SD-WAN — ZTNA integration, traffic inspection, encrypted overlay, branch security posture.',tr:'SD-WAN\'ın güvenlik politikası perspektifi — ZTNA entegrasyonu, trafik denetimi, şifrelenmiş overlay.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['SD-WAN security policy and zone trust review','ZTNA and identity-based access assessment','Encrypted overlay and certificate management','Branch traffic inspection effectiveness','Security event visibility and logging review'],tr:['SD-WAN güvenlik politikası ve zone güven review','ZTNA ve kimlik tabanlı erişim değerlendirmesi','Şifrelenmiş overlay ve sertifika yönetimi','Şube trafik denetimi etkinliği','Güvenlik olay görünürlüğü ve loglama review']},
+     tools:['FortiManager','FortiAnalyzer','Nipper','Custom Scripts'],
+     dlv:{en:['Secure SD-WAN gap report','ZTNA readiness assessment','Security posture report'],tr:['Güvenli SD-WAN gap raporu','ZTNA hazırlık değerlendirmesi','Güvenlik duruş raporu']}},
+    {name:{en:'IPS/IDS',tr:'IPS/IDS'},
+     desc:{en:'Intrusion prevention and detection assessment — signature coverage, tuning effectiveness, alert quality and sensor placement.',tr:'İzinsiz giriş önleme ve tespit değerlendirmesi — imza kapsamı, ayar etkinliği, alarm kalitesi ve sensör yerleşimi.'},
+     tiers:['A','B','C'],managed:true,managedCategory:'security-ops',cr:[],
+     scope:{en:['Signature coverage and update currency review','False positive rate and alert quality assessment','Sensor placement and traffic coverage audit','Inline vs passive mode effectiveness review','Integration with SIEM/logging platforms'],tr:['İmza kapsamı ve güncelleme güncelliği review','False positive oranı ve alarm kalitesi değerlendirmesi','Sensör yerleşimi ve trafik kapsama denetimi','Inline vs pasif mod etkinlik review','SIEM/loglama platformlarıyla entegrasyon']},
+     tools:['Snort','Suricata','FortiIPS','Nessus'],
+     dlv:{en:['IPS/IDS effectiveness report','Placement and coverage assessment','Tuning recommendations'],tr:['IPS/IDS etkinlik raporu','Yerleşim ve kapsama değerlendirmesi','Ayar önerileri']}},
+    {name:{en:'DDoS Protection Architecture',tr:'DDoS Koruma Mimarisi'},
+     desc:{en:'DDoS protection posture assessment — on-premises scrubbing, upstream ISP protection, cloud scrubbing integration.',tr:'DDoS koruma duruş değerlendirmesi — şirket içi scrubbing, upstream ISP koruması, bulut scrubbing entegrasyonu.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['DDoS protection architecture and coverage review','On-premise vs cloud/upstream scrubbing assessment','Detection threshold and mitigation time review','Traffic diversion and re-injection architecture','Residual risk and capacity gap assessment'],tr:['DDoS koruma mimarisi ve kapsama review','Şirket içi vs bulut/upstream scrubbing değerlendirmesi','Tespit eşiği ve azaltım süresi review','Trafik saptırma ve yeniden enjeksiyon mimarisi','Artık risk ve kapasite gap değerlendirmesi']},
+     tools:['Custom Assessment','Vendor CLI','Traffic Analyzers'],
+     dlv:{en:['DDoS protection gap report','Architecture recommendations','Residual risk assessment'],tr:['DDoS koruma gap raporu','Mimari öneriler','Artık risk değerlendirmesi']}},
+    {name:{en:'Managed Firewall Operations',tr:'Yönetilen Firewall Operasyonları'},
+     desc:{en:'Policy management, rule lifecycle, change management with approval workflow. Firmware updates, signature management, 24/7 monitoring.',tr:'Politika yönetimi, kural yaşam döngüsü, onay iş akışlı değişiklik yönetimi. Firmware güncellemeleri, 7/24 izleme.'},
+     tiers:['C'],managed:true,managedCategory:'security-ops',cr:[],
+     scope:{en:['Rule change management with approval workflow','Monthly policy optimization and cleanup','Firmware and signature update management','24/7 monitoring with SLA-backed incident response','Quarterly policy review and reporting'],tr:['Onay iş akışlı kural değişiklik yönetimi','Aylık politika optimizasyonu ve temizliği','Firmware ve imza güncelleme yönetimi','SLA destekli 7/24 izleme ve olay müdahalesi','Çeyreklik politika review ve raporlama']},
+     tools:['FortiManager','FortiAnalyzer','Panorama','SmartCenter'],
+     dlv:{en:['Monthly management report','Change log and audit trail','SLA performance report'],tr:['Aylık yönetim raporu','Değişiklik logu ve denetim izi','SLA performans raporu']}}
+   ]},
+  {id:'dom-vcl',icon:'◫',name:{en:'Virtualization',tr:'Sanallaştırma'},
+   desc:{en:'Hypervisor hardening, virtual infrastructure assessment and managed operations. Platform-agnostic: VMware, Hyper-V, KVM, Proxmox.',tr:'Hypervisor sıkılaştırma, sanal altyapı değerlendirmesi ve yönetilen operasyonlar. Platform bağımsız.'},
+   sds:[
+    {name:{en:'VMware by Broadcom',tr:'VMware by Broadcom'},
+     desc:{en:'vSphere/VCF hardening review against CIS benchmarks. ESXi, vCenter, NSX.',tr:'CIS benchmark karşı vSphere/VCF sıkılaştırma review. ESXi, vCenter, NSX.'},
+     tiers:['A','B','C'],managed:true,managedCategory:'infra-ops',cr:[],
+     scope:{en:['ESXi host hardening vs DISA STIG / CIS benchmarks','vCenter/management plane access control review','NSX micro-segmentation policy validation','VM isolation and snapshot management audit','Licensing and capacity utilization review'],tr:['DISA STIG / CIS benchmark karşı ESXi host sıkılaştırma','vCenter/yönetim düzlemi erişim kontrolü review','NSX mikro-segmentasyon politika doğrulaması','VM izolasyonu ve snapshot yönetimi denetimi','Lisans ve kapasite kullanım review']},
+     tools:['CIS-CAT','vRealize','Tenable','vSphere API'],
+     dlv:{en:['Hardening scorecard','Drift detection baseline','Remediation playbook'],tr:['Sıkılaştırma puan kartı','Drift tespit baseline','İyileştirme playbook']}},
+    {name:{en:'KVM',tr:'KVM'},
+     desc:{en:'KVM/QEMU hypervisor hardening, libvirt configuration, guest isolation and live migration security.',tr:'KVM/QEMU hypervisor sıkılaştırma, libvirt konfigürasyon, konuk izolasyonu ve canlı migrasyon güvenliği.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['KVM host hardening vs CIS Linux benchmarks','libvirt and virtual network configuration review','Guest isolation and resource boundary assessment','Live migration security and encryption review','Backup and snapshot management audit'],tr:['CIS Linux benchmark karşı KVM host sıkılaştırma','libvirt ve sanal ağ konfigürasyon review','Konuk izolasyonu ve kaynak sınır değerlendirmesi','Canlı migrasyon güvenliği ve şifreleme review','Yedekleme ve snapshot yönetimi denetimi']},
+     tools:['CIS-CAT','OpenSCAP','Custom Scripts','Nessus'],
+     dlv:{en:['KVM hardening gap report','Configuration recommendations','Remediation plan'],tr:['KVM sıkılaştırma gap raporu','Konfigürasyon önerileri','İyileştirme planı']}},
+    {name:{en:'Proxmox VE',tr:'Proxmox VE'},
+     desc:{en:'Proxmox VE hardening — cluster security, storage, network configuration, management plane access.',tr:'Proxmox VE sıkılaştırma — cluster güvenliği, depolama, ağ konfigürasyonu, yönetim düzlemi erişimi.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['Proxmox cluster security configuration review','Storage and backup configuration audit','Network bridge and VLAN security assessment','Management interface access control review','SSL/TLS and certificate configuration audit'],tr:['Proxmox cluster güvenlik konfigürasyon review','Depolama ve yedekleme konfigürasyon denetimi','Ağ köprüsü ve VLAN güvenlik değerlendirmesi','Yönetim arayüzü erişim kontrolü review','SSL/TLS ve sertifika konfigürasyon denetimi']},
+     tools:['CIS-CAT','OpenSCAP','Custom Scripts','Nmap'],
+     dlv:{en:['Proxmox hardening gap report','Configuration recommendations','Remediation plan'],tr:['Proxmox sıkılaştırma gap raporu','Konfigürasyon önerileri','İyileştirme planı']}},
+    {name:{en:'Managed Virtualization Operations',tr:'Yönetilen Sanallaştırma Operasyonları'},
+     desc:{en:'Daily health monitoring, VM lifecycle management, resource optimization, capacity planning. Platform-agnostic.',tr:'Günlük sağlık izleme, VM yaşam döngüsü yönetimi, kaynak optimizasyonu, kapasite planlaması.'},
+     tiers:['C'],managed:true,managedCategory:'infra-ops',cr:[],
+     scope:{en:['Daily health monitoring and alerting','VM lifecycle management and provisioning','Resource optimization and right-sizing','Monthly capacity planning and reporting','Patch and update management'],tr:['Günlük sağlık izleme ve alarm','VM yaşam döngüsü yönetimi ve provisioning','Kaynak optimizasyonu ve right-sizing','Aylık kapasite planlaması ve raporlama','Patch ve güncelleme yönetimi']},
+     tools:['vCenter','vRealize Operations','Proxmox API','Custom Monitoring'],
+     dlv:{en:['Monthly health report','Capacity utilization dashboard','Change management log'],tr:['Aylık sağlık raporu','Kapasite kullanım panosu','Değişiklik yönetimi logu']}}
+   ]},
+  {id:'dom-sto',icon:'◉',name:{en:'Compute & Storage Infrastructure',tr:'İşlem & Depolama Altyapısı'},
+   desc:{en:'Physical and virtual compute, block/file/object storage, SAN fabric. Capacity, performance, EoL/EoS lifecycle.',tr:'Fiziksel ve sanal hesaplama, blok/dosya/nesne depolama, SAN fabric. Kapasite, performans, EoL/EoS yaşam döngüsü.'},
+   sds:[
+    {name:{en:'Server Platform Health & Lifecycle',tr:'Sunucu Platform Sağlığı & Yaşam Döngüsü'},
+     desc:{en:'Server hardware health, firmware status, EoL/EoS risk, vendor support lifecycle assessment.',tr:'Sunucu donanım sağlığı, firmware durumu, EoL/EoS riski, vendor destek yaşam döngüsü değerlendirmesi.'},
+     tiers:['A','B','C'],managed:true,managedCategory:'infra-ops',cr:[],
+     scope:{en:['Server hardware health and firmware status review','EoL/EoS risk identification and timeline','Vendor support contract status audit','BIOS/UEFI security configuration review','Patch and firmware lifecycle management'],tr:['Sunucu donanım sağlığı ve firmware durumu review','EoL/EoS risk tespiti ve zaman çizelgesi','Vendor destek sözleşmesi durum denetimi','BIOS/UEFI güvenlik konfigürasyon review','Patch ve firmware yaşam döngüsü yönetimi']},
+     tools:['HPE OneView','Dell OpenManage','IBM Spectrum','Custom Scripts'],
+     dlv:{en:['Server health report','EoL/EoS risk register','Lifecycle management plan'],tr:['Sunucu sağlık raporu','EoL/EoS risk kaydı','Yaşam döngüsü yönetim planı']}},
+    {name:{en:'Storage Architecture',tr:'Depolama Mimarisi'},
+     desc:{en:'Block, file and object storage assessment — capacity, performance, tiering design, data protection alignment.',tr:'Blok, dosya ve nesne depolama değerlendirmesi — kapasite, performans, katmanlama tasarımı, veri koruma uyumu.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['Storage capacity utilization and growth forecasting','Performance and IOPS bottleneck analysis','Tiering design and policy review','Deduplication and compression effectiveness','Data at rest encryption validation'],tr:['Depolama kapasitesi kullanımı ve büyüme tahmini','Performans ve IOPS darboğaz analizi','Katmanlama tasarımı ve politika review','Yinelenenleri kaldırma ve sıkıştırma etkinliği','Durağan veri şifreleme doğrulaması']},
+     tools:['NetApp ONTAP tools','Pure1','Dell Storage Analytics','Custom Scripts'],
+     dlv:{en:['Storage architecture gap report','Capacity planning report','Performance recommendations'],tr:['Depolama mimarisi gap raporu','Kapasite planlama raporu','Performans önerileri']}},
+    {name:{en:'SAN Fabric',tr:'SAN Fabric'},
+     desc:{en:'SAN fabric topology review — zoning, ISLs, redundancy, EoL/EoS switches, HBA configuration.',tr:'SAN fabric topoloji review — zoning, ISL\'ler, yedeklilik, EoL/EoS switch\'ler, HBA konfigürasyonu.'},
+     tiers:['A','B'],managed:false,cr:[],
+     scope:{en:['SAN fabric topology and zoning review','ISL configuration and redundancy validation','HBA driver and firmware currency check','EoL/EoS switch and component identification','Fabric security and access control review'],tr:['SAN fabric topoloji ve zoning review','ISL konfigürasyonu ve yedeklilik doğrulaması','HBA sürücü ve firmware güncelliği kontrolü','EoL/EoS switch ve bileşen tespiti','Fabric güvenliği ve erişim kontrolü review']},
+     tools:['Brocade Network Advisor','Cisco DCNM','Custom Scripts'],
+     dlv:{en:['SAN fabric assessment report','Zoning recommendations','EoL/EoS risk list'],tr:['SAN fabric değerlendirme raporu','Zoning önerileri','EoL/EoS risk listesi']}}
+   ]},
+  {id:'dom-dpr',icon:'⟳',name:{en:'Data Protection & Replication',tr:'Veri Koruma ve Replikasyon'},
+   desc:{en:'Backup infrastructure assessment, replication architecture review, RPO/RTO validation, ransomware resilience.',tr:'Yedekleme altyapısı değerlendirmesi, replikasyon mimarisi review, RPO/RTO doğrulaması, fidye yazılımı dayanıklılığı.'},
+   sds:[
+    {name:{en:'Backup & Replication Assessment',tr:'Yedekleme ve Replikasyon Değerlendirmesi'},
+     desc:{en:'Backup coverage, job success rates, RPO/RTO alignment, replication topology. Immutable backup and ransomware resilience.',tr:'Yedekleme kapsamı, iş başarı oranları, RPO/RTO uyumu, replikasyon topolojisi. Değiştirilemez yedekleme.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['Backup job coverage and success rate analysis','RPO/RTO gap vs business requirements','Replication topology and failover readiness','Immutable backup and air-gap validation','Backup infrastructure capacity and performance'],tr:['Yedekleme işi kapsamı ve başarı oranı analizi','İş gereksinimlerine karşı RPO/RTO gap','Replikasyon topolojisi ve failover hazırlığı','Değiştirilemez yedekleme ve air-gap doğrulaması','Yedekleme altyapısı kapasitesi ve performansı']},
+     tools:['Veeam ONE','Commvault Command Center','Zerto Analytics','Custom Scripts'],
+     dlv:{en:['Backup coverage report','RPO/RTO gap analysis','Ransomware resilience scorecard'],tr:['Yedekleme kapsam raporu','RPO/RTO gap analizi','Fidye yazılımı dayanıklılık puan kartı']}},
+    {name:{en:'Managed Backup & Replication',tr:'Yönetilen Yedekleme ve Replikasyon'},
+     desc:{en:'Daily monitoring of backup and replication infrastructure. Job monitoring, failure remediation, restore testing.',tr:'Yedekleme ve replikasyon altyapısının günlük izleme ve yönetimi. İş izleme, hata giderme, geri yükleme testi.'},
+     tiers:['C'],managed:true,managedCategory:'infra-ops',cr:[],
+     scope:{en:['Daily backup job monitoring and failure remediation','Replication health monitoring','Quarterly restore testing and verification','Backup infrastructure capacity management','Monthly reporting and SLA tracking'],tr:['Günlük yedekleme işi izleme ve hata giderme','Replikasyon sağlık izleme','Çeyreklik geri yükleme testi ve doğrulama','Yedekleme altyapısı kapasite yönetimi','Aylık raporlama ve SLA takibi']},
+     tools:['Veeam','Commvault','Zerto','Rubrik'],
+     dlv:{en:['Monthly backup operations report','Restore test results','SLA compliance metrics'],tr:['Aylık yedekleme operasyon raporu','Geri yükleme test sonuçları','SLA uyumluluk metrikleri']}}
+   ]}
+ ]
+},
+{id:'fw-02',
+ name:{en:'Continuous Threat Exposure Management',tr:'Sürekli Tehdit Maruziyet Yönetimi'},
+ tagline:{en:'Gartner CTEM Framework — Continuous Exposure Reduction',tr:'Gartner CTEM Çerçevesi — Sürekli Maruziyet Azaltma'},
+ desc:{en:'Continuous identification, prioritization and validation of exploitable exposures across the full attack surface. EPSS and CISA KEV-driven prioritization eliminates alert fatigue.',
+       tr:'Tam saldırı yüzeyi genelinde istismar edilebilir açıkların sürekli tespiti, önceliklendirilmesi ve doğrulanması. EPSS ve CISA KEV odaklı önceliklendirme alarm yorgunluğunu ortadan kaldırır.'},
+ color:'#818cf8',
+ lc:[
+  {s:'1',n:{en:'Scoping',tr:'Kapsam Belirleme'},d:{en:'Define asset scope, business criticality and acceptable risk thresholds.',tr:'Varlık kapsamını, iş kritikliğini ve kabul edilebilir risk eşiklerini tanımlayın.'}},
+  {s:'2',n:{en:'Discovery',tr:'Keşif'},d:{en:'Identify all exposures across attack surface, internal network and application layer.',tr:'Saldırı yüzeyi, iç ağ ve uygulama katmanı genelinde tüm açıkları tespit edin.'}},
+  {s:'3',n:{en:'Prioritization',tr:'Önceliklendirme'},d:{en:'EPSS and CISA KEV-weighted scoring to focus on highest-risk exploitable exposures.',tr:'En yüksek riskli açıklara odaklanmak için EPSS ve CISA KEV ağırlıklı skorlama.'}},
+  {s:'4',n:{en:'Validation',tr:'Doğrulama'},d:{en:'Active validation of findings to confirm real exploitability and eliminate false positives.',tr:'Gerçek istismar edilebilirliği teyit etmek için aktif bulgu doğrulaması.'}},
+  {s:'5',n:{en:'Mobilization',tr:'Harekete Geçme'},d:{en:'Remediation tracking, stakeholder reporting and continuous improvement cycle.',tr:'İyileştirme takibi, paydaş raporlama ve sürekli program iyileştirme döngüsü.'}}
+ ],
+ domains:[
+  {id:'dom-exp',icon:'🔍',name:{en:'Exposure & Vulnerability Management',tr:'Açık ve Güvenlik Açığı Yönetimi'},
+   desc:{en:'External and internal vulnerability scanning, EPSS/KEV-driven prioritization, lifecycle tracking.',tr:'Dış ve iç güvenlik açığı taraması, EPSS/KEV odaklı önceliklendirme ve yaşam döngüsü takibi.'},
+   sds:[
+    {name:{en:'External Vulnerability Assessment',tr:'Dış Güvenlik Açığı Değerlendirmesi'},
+     desc:{en:'Scanning of internet-facing IPs and services. EPSS/KEV-scored vulnerability identification and reporting.',tr:'İnternete yönelik IP ve hizmetlerin taranması. EPSS/KEV skorlamalı güvenlik açığı tespiti ve raporlama.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['Internet-facing IP and service enumeration','Vulnerability scanning and fingerprinting','CVSS + EPSS risk scoring','CISA KEV cross-reference check','Reporting with remediation priority'],tr:['İnternete yönelik IP ve hizmet sayımı','Güvenlik açığı tarama ve parmak izi','CVSS + EPSS risk skorlaması','CISA KEV çapraz referans kontrolü','Raporlama ve iyileştirme önceliği']},
+     tools:['OpenVAS','Nuclei','Nessus','Custom Scripts'],
+     dlv:{en:['Vulnerability findings report','EPSS/KEV-prioritized risk register','Executive summary with remediation roadmap'],tr:['Güvenlik açığı bulgular raporu','EPSS/KEV önceliklendirilmiş risk kaydı','İyileştirme yol haritası ile yönetici özeti']}},
+    {name:{en:'Web Application Vulnerability Assessment',tr:'Web Uygulama Güvenlik Açığı Değerlendirmesi'},
+     desc:{en:'OWASP Top 10 focused web application scanning — automated discovery plus manual validation of critical findings.',tr:'OWASP Top 10 odaklı web uygulama taraması — otomatik keşif ve kritik bulguların manuel doğrulaması.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['OWASP Top 10 vulnerability scanning','Authentication and session management testing','API security endpoint review','SQL injection and XSS detection','Finding validation and false positive triage'],tr:['OWASP Top 10 güvenlik açığı taraması','Kimlik doğrulama ve oturum yönetimi testi','API güvenliği endpoint review','SQL injection ve XSS tespiti','Bulgu doğrulama ve false positive değerlendirme']},
+     tools:['OWASP ZAP','Nikto','Nuclei web templates','Burp Suite'],
+     dlv:{en:['Web app vulnerability report','OWASP Top 10 coverage matrix','Remediation guidance with evidence'],tr:['Web uygulama güvenlik açığı raporu','OWASP Top 10 kapsama matrisi','Kanıt ile iyileştirme rehberi']}},
+    {name:{en:'EPSS/KEV Risk Prioritization',tr:'EPSS/KEV Risk Önceliklendirme'},
+     desc:{en:'Context-aware risk scoring using EPSS probability and CISA KEV status to focus remediation on what matters.',tr:'İyileştirmeyi önemli yere odaklamak için EPSS olasılığı ve CISA KEV durumunu kullanan bağlam farkında risk skorlaması.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['CVSS score correlation with EPSS probability','CISA KEV cross-reference for all findings','Business context weighting (crown jewel assets)','Prioritized remediation queue generation','Trend analysis of exposure score over time'],tr:['EPSS olasılığı ile CVSS skor korelasyonu','Tüm bulgular için CISA KEV çapraz referans','İş bağlamı ağırlıklandırma (kritik varlıklar)','Önceliklendirilmiş iyileştirme kuyruğu oluşturma','Zaman içinde maruziyet skoru trend analizi']},
+     tools:['EPSS API','CISA KEV Feed','DefectDojo','Custom Scripts'],
+     dlv:{en:['Risk-prioritized finding register','EPSS/KEV coverage report','Executive exposure dashboard'],tr:['Risk önceliklendirilmiş bulgu kaydı','EPSS/KEV kapsama raporu','Yönetici maruziyet panosu']}},
+    {name:{en:'Exploitability Validation',tr:'İstismar Edilebilirlik Doğrulaması'},
+     desc:{en:'Active validation to confirm real exploitability and eliminate false positives. Priority focus on KEV-listed items.',tr:'Gerçek istismar edilebilirliği teyit etmek ve false positive\'leri ortadan kaldırmak için aktif doğrulama.'},
+     tiers:['B','C'],managed:false,cr:[],
+     scope:{en:['Active exploitation template execution (safe/non-destructive)','False positive reduction and triage','KEV and EPSS-weighted validation priority','Confirmed exposure report with evidence','Retest after remediation'],tr:['Aktif istismar şablon yürütme (güvenli/yıkıcı olmayan)','False positive azaltma ve değerlendirme','KEV ve EPSS ağırlıklı doğrulama önceliği','Kanıt ile doğrulanmış açık raporu','İyileştirme sonrası retest']},
+     tools:['Nuclei','Metasploit (safe modules)','Custom Scripts'],
+     dlv:{en:['Validated exposure report','Evidence-backed finding records','Retest confirmation report'],tr:['Doğrulanmış açık raporu','Kanıt destekli bulgu kayıtları','Retest onay raporu']}},
+    {name:{en:'Vulnerability Lifecycle Management',tr:'Güvenlik Açığı Yaşam Döngüsü Yönetimi'},
+     desc:{en:'Continuous scanning, EPSS/KEV-driven prioritization, remediation tracking and trend reporting. DefectDojo-based multi-tenant.',tr:'Sürekli tarama, EPSS/KEV odaklı önceliklendirme, iyileştirme takibi. DefectDojo tabanlı çok kiracılı yönetim.'},
+     tiers:['C'],managed:true,managedCategory:'security-ops',cr:['fw-01'],
+     scope:{en:['Scheduled continuous scanning (external + internal)','EPSS and CISA KEV real-time cross-reference','Remediation workflow and SLA tracking','False-positive triage and validation','Monthly trend and KPI reporting'],tr:['Zamanlanmış sürekli tarama (dış + iç)','EPSS ve CISA KEV gerçek zamanlı çapraz referans','İyileştirme iş akışı ve SLA takibi','False-positive değerlendirme ve doğrulama','Aylık trend ve KPI raporlama']},
+     tools:['DefectDojo','OpenVAS','Nuclei','EPSS API / CISA KEV Feed'],
+     dlv:{en:['Monthly vulnerability trend report','Live risk dashboard (portal access)','MTTR and SLA compliance metrics'],tr:['Aylık güvenlik açığı trend raporu','Canlı risk panosu (portal erişimi)','MTTR ve SLA uyumluluk metrikleri']}}
+   ]},
+  {id:'dom-eas',icon:'🌐',name:{en:'External Attack Surface',tr:'Dış Saldırı Yüzeyi'},
+   desc:{en:'Passive DNS, CT logs, subdomain discovery, brand risk monitoring. Continuous visibility into attacker perspective.',tr:'Pasif DNS, CT logları, subdomain keşfi, marka riski izleme. Saldırgan perspektifinden sürekli görünürlük.'},
+   sds:[
+    {name:{en:'Attack Surface Discovery',tr:'Saldırı Yüzeyi Keşfi'},
+     desc:{en:'Passive DNS, certificate transparency logs and subdomain enumeration. Inventory of all internet-facing assets.',tr:'Pasif DNS, sertifika şeffaflık logları ve subdomain sayımı. Tüm internete yönelik varlıkların envanteri.'},
+     tiers:['B','C'],managed:false,cr:[],
+     scope:{en:['Subdomain and asset discovery via CT logs and passive DNS','Exposed service and port inventory','Cloud asset and shadow IT discovery','Certificate expiry and misconfiguration monitoring','New asset alerting and change detection'],tr:['CT logları ve pasif DNS yoluyla subdomain ve varlık keşfi','Açık hizmet ve port envanteri','Bulut varlığı ve shadow IT keşfi','Sertifika süresi dolma ve yanlış yapılandırma izleme','Yeni varlık uyarısı ve değişiklik tespiti']},
+     tools:['Amass','Subfinder','Shodan','Censys'],
+     dlv:{en:['Attack surface inventory report','Exposure delta report','Shadow IT findings list'],tr:['Saldırı yüzeyi envanter raporu','Açık delta raporu','Shadow IT bulgular listesi']}},
+    {name:{en:'Look-Alike Domain & Brand Monitoring',tr:'Look-Alike Domain ve Marka İzleme'},
+     desc:{en:'Detection of fraudulent domains, phishing infrastructure and brand impersonation targeting the organization.',tr:'Kuruluşu hedef alan sahte domain, phishing altyapısı ve marka taklidi tespiti.'},
+     tiers:['A','B','C'],managed:false,cr:[],
+     scope:{en:['Typosquatting and homograph domain detection','Active phishing kit and lookalike page identification','MX and mail infrastructure abuse monitoring','Brand and trademark keyword monitoring','Takedown support coordination'],tr:['Typosquatting ve homograph domain tespiti','Aktif phishing kiti ve lookalike sayfa tespiti','MX ve mail altyapısı kötüye kullanım izleme','Marka ve ticari marka anahtar kelime izleme','Kaldırma destek koordinasyonu']},
+     tools:['dnstwist','URLscan','VirusTotal','Custom Feeds'],
+     dlv:{en:['Look-alike domain monitoring report','Active threat alert list','Takedown request documentation'],tr:['Look-alike domain izleme raporu','Aktif tehdit uyarı listesi','Kaldırma talebi dokümantasyonu']}},
+    {name:{en:'Digital Footprint & Dark Web Monitoring',tr:'Dijital Ayak İzi & Dark Web İzleme'},
+     desc:{en:'Leaked credentials, dark web exposure, email/domain reputation monitoring. Proactive detection before exploitation.',tr:'Sızdırılmış kimlik bilgileri, dark web açığı, email/domain itibar izleme. Sömürülmeden önce proaktif tespit.'},
+     tiers:['C'],managed:true,managedCategory:'security-ops',cr:[],
+     scope:{en:['Credential leak detection and breach correlation','Dark web marketplace monitoring','Email and domain reputation monitoring','Paste site and code repository monitoring','Exposure alert and remediation guidance'],tr:['Kimlik bilgisi sızıntı tespiti ve ihlal korelasyonu','Dark web pazaryeri izleme','Email ve domain itibar izleme','Paste sitesi ve kod deposu izleme','Açık uyarısı ve iyileştirme rehberi']},
+     tools:['Custom OSINT Tooling','Have I Been Pwned API','Specialized Feeds'],
+     dlv:{en:['Monthly digital footprint report','Credential exposure alerts','Dark web mention report'],tr:['Aylık dijital ayak izi raporu','Kimlik bilgisi açığı uyarıları','Dark web bahis raporu']}}
+   ]},
+  {id:'dom-secval',icon:'✓',name:{en:'Security Validation',tr:'Güvenlik Doğrulaması'},
+   roadmap:true,
+   desc:{en:'Continuous security control validation and attack path analysis. Roadmap capability — planned for Phase 2.',tr:'Sürekli güvenlik kontrolü doğrulaması ve saldırı yolu analizi. Yol haritası kapasitesi — Faz 2 planlanmıştır.'},
+   sds:[
+    {name:{en:'Continuous Security Validation (BAS)',tr:'Sürekli Güvenlik Doğrulaması (BAS)'},
+     desc:{en:'Breach and Attack Simulation — continuous automated testing of security control effectiveness.',tr:'İhlal ve Saldırı Simülasyonu — güvenlik kontrollerinin etkinliğinin sürekli otomatik testi.'},
+     tiers:['B','C'],managed:false,cr:[],roadmap:true,
+     scope:{en:['Automated attack simulation across kill chain','Security control gap identification','Detection and response effectiveness measurement','Continuous improvement feedback loop','Executive and technical reporting'],tr:['Kill chain genelinde otomatik saldırı simülasyonu','Güvenlik kontrolü gap tespiti','Tespit ve müdahale etkinliği ölçümü','Sürekli iyileştirme geri bildirim döngüsü','Yönetici ve teknik raporlama']},
+     tools:['AttackIQ','Cymulate','SafeBreach'],
+     dlv:{en:['Control effectiveness report','Kill chain coverage map','Improvement recommendations'],tr:['Kontrol etkinliği raporu','Kill chain kapsama haritası','İyileştirme önerileri']}},
+    {name:{en:'Attack Path Analysis',tr:'Saldırı Yolu Analizi'},
+     desc:{en:'Visualization of attacker lateral movement paths and critical asset exposure within the network.',tr:'Ağ içinde saldırgan lateral movement yollarının ve kritik varlık açığının görselleştirilmesi.'},
+     tiers:['B','C'],managed:false,cr:[],roadmap:true,
+     scope:{en:['Credential and privilege escalation path mapping','Crown jewel asset reachability analysis','Lateral movement choke point identification','Blast radius estimation for key accounts','Remediation priority by attack path impact'],tr:['Kimlik bilgisi ve ayrıcalık yükseltme yolu haritalama','Kritik varlık erişilebilirlik analizi','Lateral movement darboğaz tespiti','Kilit hesaplar için patlama yarıçapı tahmini','Saldırı yolu etkisine göre iyileştirme önceliği']},
+     tools:['BloodHound','Neo4j','Custom Analysis'],
+     dlv:{en:['Attack path visualization report','Critical exposure summary','Prioritized hardening plan'],tr:['Saldırı yolu görselleştirme raporu','Kritik açık özeti','Önceliklendirilmiş sıkılaştırma planı']}}
+   ]}
+ ]
+}
+];
+
+// STATE
+var S={tab:'fw',fwIdx:null,domFwIdx:null,domDomIdx:null,accIdx:null,openSvc:null,msCatOpen:{}};
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.textContent===l.toUpperCase());});
+  renderLabels();renderNav();
+  if(S.tab==='fw'&&S.fwIdx!==null)renderFW(S.fwIdx);
+  else if(S.tab==='dom'&&S.domFwIdx!==null)renderDomView(S.domFwIdx,S.domDomIdx);
+  else if(S.tab==='ms')renderMS();
+  if(S.openSvc)populateRP(S.openSvc);
+}
+
+function renderLabels(){
+  document.getElementById('lbl-cat').textContent=lang==='en'?'Service Catalog':'Servis Kataloğu';
+  document.getElementById('lbl-eng').textContent=lang==='en'?'Engagement Tiers':'Hizmet Kademeleri';
+  document.getElementById('rp-cta').textContent=lang==='en'?'Request Proposal':'Teklif Al';
+  document.getElementById('em-title').textContent=lang==='en'?'Engagement Tiers':'Hizmet Kademeleri';
+  document.getElementById('em-sub').textContent=lang==='en'?'All services are available in one or more engagement tiers.':'Tüm servisler bir veya daha fazla hizmet kademesinde sunulur.';
+  document.getElementById('em-close').textContent=lang==='en'?'Close':'Kapat';
+  document.getElementById('tab-fw').textContent=lang==='en'?'Frameworks':'Çerçeveler';
+  document.getElementById('tab-dom').textContent=lang==='en'?'Domains':'Domain\'ler';
+  document.getElementById('tab-ms').textContent=lang==='en'?'Managed':'Yönetilen';
+  document.getElementById('et').textContent=lang==='en'?'Select a Framework':'Çerçeve Seçin';
+  document.getElementById('ed').textContent=lang==='en'?'Choose a framework from the left panel to explore domains and services.':'Domain ve servisleri keşfetmek için sol panelden bir çerçeve seçin.';
+}
+
+function switchTab(t){
+  S.tab=t;S.accIdx=null;closeRP();
+  ['fw','dom','ms'].forEach(function(x){document.getElementById('tab-'+x).classList.toggle('active',x===t);});
+  renderNav();
+  if(t==='fw'){if(S.fwIdx!==null)renderFW(S.fwIdx);else showEmpty();}
+  else if(t==='dom'){if(S.domFwIdx!==null)renderDomView(S.domFwIdx,S.domDomIdx);else showEmpty();}
+  else renderMS();
+  updateBC();
+}
+
+function renderNav(){
+  var nb=document.getElementById('nav-body');nb.innerHTML='';
+  if(S.tab==='fw'){
+    FW.forEach(function(fw,i){
+      var el=mk('div','nav-item'+(S.fwIdx===i?' active':''));
+      el.innerHTML='<div class="nav-dot" style="background:'+(S.fwIdx===i?fw.color:'var(--border)')+'"></div>'+
+        '<div class="nav-item-label">'+L(fw.name)+'</div>';
+      el.onclick=function(){pickFW(i);};nb.appendChild(el);
+    });
+  } else if(S.tab==='dom'){
+    FW.forEach(function(fw,fi){
+      var s=mk('div','nav-section-hd');s.textContent=L(fw.name);nb.appendChild(s);
+      fw.domains.forEach(function(dom,di){
+        var isA=S.domFwIdx===fi&&S.domDomIdx===di;
+        var el=mk('div','nav-item'+(isA?' active':''));
+        el.innerHTML='<div class="nav-dot"></div><div class="nav-item-label">'+dom.icon+' '+L(dom.name)+'</div>';
+        el.onclick=function(){pickDom(fi,di);};nb.appendChild(el);
+      });
+    });
+  } else {
+    MCATS.forEach(function(cat){
+      var isO=S.msCatOpen[cat.id];
+      var catEl=mk('div','nav-cat'+(isO?' open':''));
+      catEl.innerHTML='<span class="nav-cat-label">'+cat.icon+' '+L(cat.name)+'</span><span class="nav-cat-chev">▾</span>';
+      catEl.onclick=function(){S.msCatOpen[cat.id]=!S.msCatOpen[cat.id];renderNav();};
+      nb.appendChild(catEl);
+      if(isO){
+        var ch=mk('div','nav-cat-children');
+        FW.forEach(function(fw){fw.domains.forEach(function(dom){dom.sds.forEach(function(sd){
+          if(sd.managed&&sd.managedCategory===cat.id){
+            var el=mk('div','nav-item');
+            el.innerHTML='<div class="nav-dot"></div><div class="nav-item-label" style="font-size:11.5px">'+L(sd.name)+'</div>';
+            el.onclick=function(e){e.stopPropagation();openCard(sd,dom,fw);};ch.appendChild(el);
+          }
+        });});});
+        nb.appendChild(ch);
+      }
+    });
+  }
+}
+
+function mk(tag,cls){var el=document.createElement(tag);if(cls)el.className=cls;return el;}
+
+function pickFW(i){S.fwIdx=i;S.accIdx=null;closeRP();renderNav();renderFW(i);updateBC();}
+function pickDom(fi,di){S.domFwIdx=fi;S.domDomIdx=di;S.accIdx=null;closeRP();renderNav();renderDomView(fi,di);updateBC();}
+
+function sdCount(fw){var n=0;fw.domains.forEach(function(d){n+=d.sds.length;});return n;}
+
+function renderFW(i){
+  var fw=FW[i];
+  var lc='<div class="lc-wrap"><div class="lc-label">'+(lang==='en'?'Service Lifecycle':'Servis Yaşam Döngüsü')+'</div><div class="lc-track">';
+  fw.lc.forEach(function(s,idx){
+    lc+='<div class="lc-step-wrap"><div class="lc-pill" style="border-color:'+fw.color+'25">'+
+      '<div class="lc-num" style="background:'+fw.color+'">'+s.s+'</div>'+
+      '<div class="lc-name">'+L(s.n)+'</div></div>'+
+      '<div class="lc-tooltip">'+L(s.d)+'</div>'+
+      (idx<fw.lc.length-1?'<div class="lc-arrow" style="color:'+fw.color+'60">→</div>':'')+
+    '</div>';
+  });
+  lc+='</div></div>';
+
+  var accs='';
+  fw.domains.forEach(function(dom,di){
+    var isO=(S.accIdx===di);
+    accs+='<div class="acc-item'+(isO?' open':'')+'" id="acc'+di+'">'+
+      '<div class="acc-head" onclick="toggleAcc('+di+')">'+
+        '<div class="acc-icon" style="background:'+fw.color+'18">'+dom.icon+'</div>'+
+        '<div class="acc-info"><div class="acc-name">'+L(dom.name)+'</div>'+
+        '<div class="acc-desc-short">'+L(dom.desc)+'</div></div>'+
+        '<div class="acc-right"><div class="cnt-badge">'+dom.sds.length+' '+(lang==='en'?'services':'servis')+'</div>'+
+        '<div class="acc-chev">▾</div></div>'+
+      '</div>'+
+      '<div class="acc-body"><div class="acc-desc-full">'+L(dom.desc)+'</div>'+
+      buildGrid(dom,fw)+'</div></div>';
+  });
+
+  document.getElementById('ci').innerHTML=
+    '<div class="fw-header">'+
+      '<div class="fw-eyebrow"><div class="fw-dot" style="background:'+fw.color+'"></div>'+L(fw.tagline)+'</div>'+
+      '<div class="fw-title">'+L(fw.name)+'</div>'+
+      '<div class="fw-desc">'+L(fw.desc)+'</div>'+
+      '<div class="fw-stats">'+
+        '<div><div class="fw-stat-val">'+fw.domains.length+'</div><div class="fw-stat-label">'+(lang==='en'?'Domains':'Domain')+'</div></div>'+
+        '<div><div class="fw-stat-val">'+sdCount(fw)+'</div><div class="fw-stat-label">'+(lang==='en'?'Services':'Servis')+'</div></div>'+
+        '<div><div class="fw-stat-val">A·B·C</div><div class="fw-stat-label">'+(lang==='en'?'Tiers':'Kademeler')+'</div></div>'+
+      '</div>'+
+    '</div>'+lc+accs;
+}
+
+function toggleAcc(di){S.accIdx=(S.accIdx===di?null:di);if(S.fwIdx!==null)renderFW(S.fwIdx);}
+
+function renderDomView(fi,di){
+  var fw=FW[fi],dom=fw.domains[di];
+  document.getElementById('ci').innerHTML=
+    '<div class="fw-header">'+
+      '<div class="fw-eyebrow"><div class="fw-dot" style="background:'+fw.color+'"></div>'+L(fw.name)+'</div>'+
+      '<div class="fw-title">'+dom.icon+' '+L(dom.name)+'</div>'+
+      '<div class="fw-desc">'+L(dom.desc)+'</div>'+
+    '</div>'+buildGrid(dom,fw);
+}
+
+function renderMS(){
+  var html='<div class="fw-header"><div class="fw-title">'+(lang==='en'?'Managed Services':'Yönetilen Servisler')+'</div>'+
+    '<div class="fw-desc">'+(lang==='en'?'Ongoing operational management of security and infrastructure. Siaflex takes over delivery so your team focuses on outcomes.':'Güvenlik ve altyapının sürekli operasyonel yönetimi. Siaflex teslimatı üstlenerek ekibinizin sonuçlara odaklanmasını sağlar.')+'</div></div>';
+  MCATS.forEach(function(cat){
+    var items=[];
+    FW.forEach(function(fw){fw.domains.forEach(function(dom){dom.sds.forEach(function(sd){if(sd.managed&&sd.managedCategory===cat.id)items.push({sd:sd,dom:dom,fw:fw});});});});
+    if(!items.length)return;
+    html+='<div class="ms-cat"><div class="ms-cat-title"><span>'+cat.icon+'</span>'+L(cat.name)+'</div><div class="ms-cards">';
+    items.forEach(function(x){html+=buildCard(x.sd,x.dom,x.fw);});
+    html+='</div></div>';
+  });
+  html+='<div class="ms-note"><strong>'+(lang==='en'?'Note: ':'Not: ')+'</strong>'+
+    (lang==='en'?'All managed services include an onboarding assessment to establish baseline before operations begin.':'Tüm yönetilen servisler, operasyonlar başlamadan önce baseline oluşturmak için bir onboarding değerlendirmesi içerir.')+'</div>';
+  document.getElementById('ci').innerHTML=html;
+}
+
+function buildGrid(dom,fw){
+  var h='<div class="cards-grid">';
+  dom.sds.forEach(function(sd){h+=buildCard(sd,dom,fw);});
+  return h+'</div>';
+}
+
+function buildCard(sd,dom,fw){
+  var tds=['A','B','C'].map(function(t){return '<div class="td'+(sd.tiers.indexOf(t)>-1?'':' off')+'">'+t+'</div>';}).join('');
+  var tags='';
+  if(sd.managed)tags+='<span class="sc-tag mt">'+(lang==='en'?'Managed':'Yönetilen')+'</span>';
+  if(sd.roadmap)tags+='<span class="sc-tag rt">'+(lang==='en'?'Roadmap':'Yol Haritası')+'</span>';
+  if(sd.cr&&sd.cr.length){sd.cr.forEach(function(ref){var rf=FW.find(function(f){return f.id===ref;});if(rf)tags+='<span class="sc-tag ct">'+(lang==='en'?'Also:':'Ayrıca: ')+L(rf.name).split(' ').slice(0,2).join(' ')+'</span>';});}
+  var desc=L(sd.desc);if(desc.length>88)desc=desc.substring(0,88)+'...';
+  // Store data in a data attribute (JSON escaped)
+  var dataStr=encodeURIComponent(JSON.stringify({sd:sd,dom:{id:dom.id,icon:dom.icon,name:dom.name,desc:dom.desc},fw:{id:fw.id,name:fw.name,color:fw.color}}));
+  return '<div class="svc-card'+(sd.managed?' mc':'')+'" onclick="openCardFromEl(this)" data-card="'+dataStr+'">'+
+    '<div class="sc-name">'+L(sd.name)+'</div>'+
+    '<div class="sc-desc">'+desc+'</div>'+
+    '<div class="sc-foot"><div class="td-dots">'+tds+'</div>'+(tags?'<div class="sc-tags">'+tags+'</div>':'')+
+    '</div></div>';
+}
+
+function openCardFromEl(el){
+  var raw=el.getAttribute('data-card');
+  if(!raw)return;
+  var d=JSON.parse(decodeURIComponent(raw));
+  openCard(d.sd,d.dom,d.fw);
+}
+
+function openCard(sd,dom,fw){
+  S.openSvc={sd:sd,dom:dom,fw:fw};
+  populateRP({sd:sd,dom:dom,fw:fw});
+  updateBC(L(sd.name));
+}
+
+function populateRP(data){
+  var sd=data.sd,dom=data.dom,fw=data.fw;
+  document.getElementById('rp-title').textContent=L(sd.name);
+  var badges='<span class="rp-badge">'+L(dom.name)+'</span><span class="rp-badge">'+L(fw.name)+'</span>';
+  if(sd.managed)badges+='<span class="rp-badge" style="background:#fff7ed;border-color:#fde68a;color:#d97706">'+(lang==='en'?'Managed Operations':'Yönetilen Operasyonlar')+'</span>';
+  document.getElementById('rp-badges').innerHTML=badges;
+
+  var tiers='<div class="rp-tiers">';
+  ['A','B','C'].forEach(function(t){
+    var on=sd.tiers.indexOf(t)>-1;
+    var tn=t==='C'?(lang==='en'?'Managed Operations':'Yönetilen Operasyonlar'):L(TIERS[t].name);
+    tiers+='<div class="rp-tier'+(on?' on':'')+'">'+'<div class="rp-tier-ltr">'+t+'</div><div class="rp-tier-name">'+tn+'</div></div>';
+  });
+  tiers+='</div>';
+
+  var scope='<ul class="rp-ul">'+L(sd.scope).map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>';
+  var tools='<div class="rp-tools">'+sd.tools.map(function(t){return '<span class="rp-tool">'+t+'</span>';}).join('')+'</div>';
+  var dlv='<ul class="rp-ul">'+L(sd.dlv).map(function(d){return '<li>'+d+'</li>';}).join('')+'</ul>';
+  var mnote=sd.managed?'<div class="rp-mnote">'+(lang==='en'?'This service is enhanced by prior domain assessment. Siaflex recommends an assessment before managed operations begin.':'Bu servis, önceki domain değerlendirmesiyle güçlendirilir. Siaflex, operasyonlar başlamadan önce bir değerlendirme hizmetini önerir.')+'</div>':'';
+
+  document.getElementById('rp-body').innerHTML=
+    mnote+
+    '<div class="rp-sec">'+tiers+'</div>'+
+    '<div class="rp-sec"><div class="rp-sec-title">'+(lang==='en'?'Description':'Açıklama')+'</div><div class="rp-desc">'+L(sd.desc)+'</div></div>'+
+    '<div class="rp-sec"><div class="rp-sec-title">'+(lang==='en'?'Scope':'Kapsam')+'</div>'+scope+'</div>'+
+    '<div class="rp-sec"><div class="rp-sec-title">'+(lang==='en'?'Tools':'Araçlar')+'</div>'+tools+'</div>'+
+    '<div class="rp-sec"><div class="rp-sec-title">'+(lang==='en'?'Deliverables':'Çıktılar')+'</div>'+dlv+'</div>';
+
+  document.getElementById('rp').classList.add('open');
+  document.getElementById('overlay').classList.add('on');
+}
+
+function closeRP(){
+  S.openSvc=null;
+  document.getElementById('rp').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+  updateBC();
+}
+
+function updateBC(svc){
+  var bc=document.getElementById('breadcrumb');
+  var p=['<span class="bc-item" onclick="bcHome()">Siaflex</span>'];
+  if(S.tab==='fw'&&S.fwIdx!==null){
+    var fw=FW[S.fwIdx];
+    p.push('<span class="bc-sep">›</span>');
+    p.push('<span class="bc-item'+(svc?'':' cur')+'" onclick="pickFW('+S.fwIdx+')">'+L(fw.name)+'</span>');
+  } else if(S.tab==='dom'&&S.domFwIdx!==null){
+    var dom=FW[S.domFwIdx].domains[S.domDomIdx];
+    p.push('<span class="bc-sep">›</span>');
+    p.push('<span class="bc-item'+(svc?'':' cur')+'" onclick="pickDom('+S.domFwIdx+','+S.domDomIdx+')">'+L(dom.name)+'</span>');
+  } else if(S.tab==='ms'){
+    p.push('<span class="bc-sep">›</span>');
+    p.push('<span class="bc-item'+(svc?'':' cur')+'" onclick="switchTab(\'ms\')">'+(lang==='en'?'Managed Services':'Yönetilen Servisler')+'</span>');
+  }
+  if(svc){p.push('<span class="bc-sep">›</span>');p.push('<span class="bc-item cur">'+svc+'</span>');}
+  bc.innerHTML=p.join('');
+}
+
+function bcHome(){closeRP();showEmpty();S.fwIdx=null;S.domFwIdx=null;S.domDomIdx=null;renderNav();updateBC();}
+
+function showEmpty(){
+  document.getElementById('ci').innerHTML='<div class="empty"><div class="empty-icon">◈</div>'+
+    '<div class="empty-title">'+(lang==='en'?'Select a Framework':'Çerçeve Seçin')+'</div>'+
+    '<div class="empty-desc">'+(lang==='en'?'Choose a framework from the left panel to explore domains and services.':'Domain ve servisleri keşfetmek için sol panelden bir çerçeve seçin.')+'</div></div>';
+}
+
+function showEM(){
+  var b=document.getElementById('em-tbody');b.innerHTML='';
+  ['A','B','C'].forEach(function(t){
+    var el=mk('div','em-tier');
+    el.innerHTML='<div class="em-ltr">'+t+'</div><div><div class="em-tier-name">'+L(TIERS[t].name)+'</div><div class="em-tier-desc">'+L(TIERS[t].desc)+'</div></div>';
+    b.appendChild(el);
+  });
+  document.getElementById('em').classList.add('on');
+}
+function hideEM(){document.getElementById('em').classList.remove('on');}
+
+// INIT
+renderLabels();renderNav();pickFW(0);
+</script>
+</body>
+</html>

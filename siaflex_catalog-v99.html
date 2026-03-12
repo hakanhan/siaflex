@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siaflex Security Services Catalog</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f1225; font-family: -apple-system, system-ui, sans-serif; color: #e2e8f0; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #1a1f3a; }
+  ::-webkit-scrollbar-thumb { background: #2d3560; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2BBD6E; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+window.CARD_DATA = {"SVC-VRM-01": {"amac": "Bu servis, müşteri altyapısındaki güvenlik açıklarını sistematik biçimde tespit etmek, risk bazlı önceliklendirmek ve remediation sürecini yönetmek amacıyla sunulmaktadır.", "in_scope": ["External IP adreslerinin periyodik güvenlik taraması", "Internal network taraması (S2S VPN veya DC doğrudan erişim)", "CVE bazlı bulgu tespiti ve CVSS skorlaması", "EPSS ve CISA KEV verisiyle risk önceliklendirmesi", "Nuclei ile false positive kırpma ve exposure doğrulaması", "Aylık / çeyreklik raporlama (teknik + yönetici özeti)", "Tier 2–3: Remediation danışmanlığı ve aksiyon planı"], "out_scope": ["Penetration testing (ayrı servis — SVC-PEN)", "Uygulama kaynak kod analizi (SAST/DAST)", "Fiziksel güvenlik değerlendirmesi", "Tier 1–2: Patch uygulaması ve aktif remediation", "Sosyal mühendislik testleri"]}, "SVC-VRM-02": {"amac": "Bu servis, müşteri altyapısındaki güvenlik açıklarını sistematik biçimde tespit etmek, risk bazlı önceliklendirmek ve remediation sürecini yönetmek amacıyla sunulmaktadır.", "in_scope": ["External IP adreslerinin periyodik güvenlik taraması", "Internal network taraması (S2S VPN veya DC doğrudan erişim)", "CVE bazlı bulgu tespiti ve CVSS skorlaması", "EPSS ve CISA KEV verisiyle risk önceliklendirmesi", "Nuclei ile false positive kırpma ve exposure doğrulaması", "Aylık / çeyreklik raporlama (teknik + yönetici özeti)", "Tier 2–3: Remediation danışmanlığı ve aksiyon planı"], "out_scope": ["Penetration testing (ayrı servis — SVC-PEN)", "Uygulama kaynak kod analizi (SAST/DAST)", "Fiziksel güvenlik değerlendirmesi", "Tier 1–2: Patch uygulaması ve aktif remediation", "Sosyal mühendislik testleri"]}, "SVC-VRM-05": {"amac": "Bu servis, müşteri altyapısındaki güvenlik açıklarını sistematik biçimde tespit etmek, risk bazlı önceliklendirmek ve remediation sürecini yönetmek amacıyla sunulmaktadır.", "in_scope": ["External IP adreslerinin periyodik güvenlik taraması", "Internal network taraması (S2S VPN veya DC doğrudan erişim)", "CVE bazlı bulgu tespiti ve CVSS skorlaması", "EPSS ve CISA KEV verisiyle risk önceliklendirmesi", "Nuclei ile false positive kırpma ve exposure doğrulaması", "Aylık / çeyreklik raporlama (teknik + yönetici özeti)", "Tier 2–3: Remediation danışmanlığı ve aksiyon planı"], "out_scope": ["Penetration testing (ayrı servis — SVC-PEN)", "Uygulama kaynak kod analizi (SAST/DAST)", "Fiziksel güvenlik değerlendirmesi", "Tier 1–2: Patch uygulaması ve aktif remediation", "Sosyal mühendislik testleri"]}, "SVC-WAV-01": {"amac": "Bu servis, müşteriye ait web uygulamaları ve API'lerin OWASP Top 10 referans çerçevesinde güvenlik açıklarını tespit etmek, risk bazlı önceliklendirmek ve remediation sürecini desteklemek amacıyla sunulmaktadır.", "in_scope": ["OWASP Top 10 kategorilerini kapsayan otomatik web uygulama taraması", "Web sunucu konfigürasyon analizi (Nikto)", "CVE bazlı web bileşen açıkları (Nuclei web templates)", "HTTP header güvenlik kontrolü ve TLS/SSL yapılandırma analizi", "Tier 2–3: Aktif ZAP taraması, form injection, session analizi", "Tier 2–3: API endpoint keşfi ve güvenlik testleri", "Tier 2–3: Remediation danışmanlığı ve aksiyon planı"], "out_scope": ["Infrastructure / network katmanı taraması (bkz. SVC-VRM)", "Mobil uygulama istemci tarafı analizi (backend API kapsama girer)", "Kaynak kod analizi — SAST (ayrı servis)", "Sosyal mühendislik ve phishing testleri", "Üçüncü taraf SaaS platform iç güvenliği"]}, "SVC-CTEM": {"amac": "Bu servis, müşteri organizasyonunun dijital tehdit maruziyetini sürekli ve sistematik biçimde ölçmek, önceliklendirmek ve azaltmak amacıyla sunulmaktadır. Gartner CTEM (Continuous Threat Exposure Management) çerçevesinin", "in_scope": ["External IP adreslerinin düzenli CVE taraması", "Internal network taraması — S2S VPN veya Siaflex DC doğrudan erişimi", "Tier 2–3: External attack surface keşfi — subdomain, CT log, shadow IT", "Tier 2–3: Look-alike domain ve marka taklit izleme — gerçek zamanlı", "Tier 2–3: EPSS + CISA KEV verisiyle otomatik risk önceliklendirmesi", "Tier 2–3: Nuclei ile false positive kırpma ve exposure doğrulaması", "Tüm tierlar: Teknik bulgu raporu + yönetici özeti"], "out_scope": ["Penetration testing — ayrı servis (SVC-PEN)", "Uygulama kaynak kod analizi (SAST / DAST)", "Sosyal mühendislik ve phishing simülasyonu", "Fiziksel güvenlik değerlendirmesi", "Tier 1–2: Patch uygulaması ve aktif remediation"]}, "SVC-FPR-01": {"amac": "Bu servis, mevcut firewall kural setinin derinlemesine analiz edilerek gizli riskler, gereksiz izinler, segmentasyon boşlukları ve politika drift'inin tespit edilmesini sağlar. Yıllarca biriken kural kirliliği, any/any i", "in_scope": ["Firewall kural seti tam analizi — tüm policy ve zone'lar", "Shadow, redundant ve kullanılmayan kural tespiti", "Any/any ve aşırı geniş izin kurallarının tespit ve risk skorlaması", "Obje ve grup tutarsızlıklarının tespiti", "Tier 2–3: Segmentasyon boşluk analizi — IT/OT, DMZ, kritik segment", "Tier 2–3: Regülasyon uyumluluk haritalama (KVKK, ISO 27001, BDDK)", "Tier 2–3: Değişiklik öncesi etki analizi"], "out_scope": ["Kural değişikliklerinin uygulanması — bkz. SVC-MSI-01 Managed Firewall", "IDS/IPS log analizi ve tehdit tespiti", "Uygulama katmanı trafik analizi", "Firewall dışındaki cihazların ACL analizi — ayrı değerlendirme"]}, "SVC-IAS-01": {"amac": "Müşterinin IT ve OT ortamındaki tüm varlıkların keşfedilmesi, envanterinin çıkarılması ve topolojisinin haritalanmasını sağlar. Diğer tüm güvenlik servislerinin başlangıç noktasıdır — bilinmeyen bir varlık korunamaz. CTEM çerçevesinde Scoping aşamasının temel girdisini oluşturur.", "in_scope": ["IT ağı pasif ve aktif varlık keşfi", "IP/MAC adresi, hostname, OS ve servis envanteri", "OT/ICS ortamı pasif keşif ve protokol tespiti — agentless, non-intrusive", "Ağ topolojisi haritası çıkarımı — segment ve VLAN bazlı", "Bilinmeyen ve yetkisiz cihaz tespiti (Tier 3)", "Envanter değişiklik izleme ve bildirim (Tier 3)", "Tier 2–3: Asset risk skorlaması — kritik varlık tespiti"], "out_scope": ["OT ortamında aktif tarama — üretim riski nedeniyle yapılmaz", "Agent tabanlı uç nokta envanter yönetimi", "Bulut varlık envanteri (AWS, Azure, GCP) — ayrı değerlendirme", "Güvenlik açığı taraması — bkz. SVC-VRM", "Konfigürasyon analizi — bkz. SVC-IAS-02, SVC-IAS-03"]}, "SVC-IAS-05": {"amac": "Müşterinin tüm altyapı katmanlarının anlık veya periyodik sağlık değerlendirmesini yapar. Ağdan sanallaştırmaya, güvenlik cihazlarından depolamaya kadar her katman incelenir. C-level yönetici özeti ile teknik detay raporu aynı anda üretilir.", "in_scope": ["Ağ, güvenlik, compute, depolama ve WAN katmanları sağlık kontrolü", "Kapasite kullanım analizi ve büyüme tahmini (Tier 2–3)", "Konfigürasyon best practice uyumluluğu (Tier 2–3)", "Yaşam sonu (EoL/EoS) cihaz ve yazılım tespiti (Tier 2–3)", "Lisans kullanım ve geçerlilik analizi (Tier 2–3)", "Yönetici özeti (C-level) ve teknik detay raporu", "Tier 3: Periyodik trend raporu ve sürekli izleme"], "out_scope": ["Güvenlik açığı taraması — bkz. SVC-VRM", "Firewall kural analizi — bkz. SVC-FPR-01", "Tespit edilen sorunların giderilmesi — managed servisler kapsamında", "Uygulama katmanı performans analizi"]}, "SVC-MSI-01": {"amac": "Bu servis, müşteriye ait güvenlik duvarı altyapısının konfigürasyon yönetimi, kural yaşam döngüsü, değişiklik yönetimi ve proaktif izleme süreçlerinin tamamını kapsar. Müşterinin BT ekibi günlük operasyondan arınarak str", "in_scope": ["Mevcut firewall konfigürasyonunun devralınması ve baseline oluşturulması", "Kural (rule) oluşturma, değiştirme, silme ve yaşam döngüsü yönetimi", "Değişiklik yönetimi süreci — RFC tabanlı onay ve uygulama", "Konfigürasyon yedekleme ve sürüm arşivleme", "Tier 2–3: Periyodik kural temizleme ve optimizasyon", "Tier 2–3: HA/cluster sağlık izleme ve failover testleri", "Tier 3: 7/24 proaktif izleme ve olay ilk müdahalesi"], "out_scope": ["Firewall donanımı temini ve fiziksel kurulumu", "Lisans satın alımı ve yenilenmesi", "Uygulama katmanı (Layer 7) içerik filtreleme — ayrı servis gerektirir", "VPN client kurulumu ve son kullanıcı desteği", "Ağ tasarımı ve topoloji değişiklikleri (danışmanlık kapsamında değerlendirilebilir)"]}, "SVC-MSI-02": {"amac": "Bu servis, müsteriye ait web uygulamalarini korumak amaciyla konumlandirilmis Web Application Firewall (WAF) platformunun tüm yasam döngüsünü kapsar. Konfigurasyon yönetimi, kural gelistirme, false positive tuning, SSL/T", "in_scope": ["Mevcut WAF konfigürasyonunun devralinmasi ve baseline olusturulmasi", "OWASP Core Rule Set (CRS) yönetimi ve güncelleme takibi", "Kural olusturma, degistirme ve yasam döngüsü yönetimi", "Degisiklik yönetimi süreci — RFC tabanli onay ve uygulama", "False positive analizi, raporlanmasi ve kural optimizasyonu", "Tier 2–3: Uygulamaya özel kural (custom rule) gelistirme", "Tier 2–3: SSL/TLS inspection konfigürasyonu ve sertifika yönetimi"], "out_scope": ["WAF donanimi veya lisansi temini", "Uygulama kaynak kodu güvenlik analizi — SAST", "Network katmani DDoS koruması (bkz. SVC-MSI-04 Managed DDoS)", "CDN yönetimi ve içerik önbellekleme", "Web uygulamasi gelistirme ve yamalanmasi — müsteri sorumlulugu"]}, "SVC-MSI-03": {"amac": "Bu servis, müşteriye ait yük dengeleme ve uygulama teslim altyapısının konfigürasyon yönetimi, pool operasyonları, SSL yaşam döngüsü ve uygulama katmanı politika yönetimini kapsar. Temel yük dengelemeden coğrafi dağıtıma", "in_scope": ["L4 ve L7 load balancing konfigürasyon ve operasyon yönetimi", "Backend pool, member ve health check yönetimi", "Session persistence politika yönetimi", "SSL/TLS sertifika yükleme, yenileme ve offload yönetimi", "Tier 2–3: İçerik tabanlı yönlendirme ve ADC policy yönetimi", "Tier 2–3: HTTP optimizasyon, compression ve connection yönetimi", "Tier 2–3: Rate limiting ve bağlantı kontrol politikaları"], "out_scope": ["Donanım temini ve fiziksel kurulum", "Lisans satın alımı ve yenilenmesi", "Uygulama güvenlik duvarı (WAF) yönetimi — bkz. SVC-MSI-02 Managed WAF", "DNS registrar yönetimi ve domain tescili", "CDN yönetimi ve içerik önbellekleme altyapısı"]}, "SVC-MSI-04": {"amac": "Bu servis, müşteriye ait LAN, WAN ve DC ağ altyapısının switching, routing ve trafik yönetimi operasyonlarını kapsar. Temel VLAN ve statik routing yönetiminden OSPF, BGP, MPLS ve traffic engineering gibi ileri seviye rou", "in_scope": ["Switching altyapısı — VLAN, STP, trunk, port güvenliği, LACP", "Statik ve dinamik routing yönetimi (OSPF, BGP, redistribution)", "Route policy, prefix-list ve PBR yönetimi", "BFD ve fast failover yapılandırma ve izleme", "Tier 2–3: QoS sınıflandırma, işaretleme ve şekillendirme politikaları", "Tier 3: MPLS, segment routing ve traffic engineering politikaları", "Tier 3: Multicast routing (PIM-SM, PIM-SSM, IGMP snooping)"], "out_scope": ["Donanım temini ve fiziksel kurulum", "ISP hat temini ve sözleşme yönetimi", "Kablosuz ağ (Wi-Fi) altyapı yönetimi — ayrı servis", "SD-WAN yönetimi — bkz. SVC-MSI-05 Managed Secure SD-WAN", "Güvenlik duvarı politika yönetimi — bkz. SVC-MSI-01 Managed Firewall"]}, "SVC-MSI-05": {"amac": "Bu servis, merkez-şube ve çok lokasyonlu WAN altyapısının SD-WAN overlay yönetimi, uygulama bazlı yönlendirme, güvenlik katmanı entegrasyonu ve WAN optimizasyonunu kapsar. Geleneksel MPLS bağımlılığını azaltarak broadban", "in_scope": ["SD-WAN overlay tünel yönetimi ve şube-merkez bağlantı politikaları", "Şube onboarding — zero-touch provisioning dahil (Tier 2–3)", "Uygulama tanıma ve SLA bazlı dinamik path switching", "Çoklu WAN bağlantısı yönetimi (ISP, MPLS, LTE, fiber)", "Tier 2–3: Merkezi controller/orchestrator yönetimi ve template dağıtımı", "Tier 2–3: Next-gen firewall, IPS/IDS, URL filtreleme ve SSL inspection politikaları", "Tier 2–3: WAN link kalite izleme — SLA, jitter, paket kaybı, gecikme"], "out_scope": ["CPE/edge cihaz temini ve fiziksel kurulumu — müşteri sorumluluğundadır", "WAN hat temini (ISP, MPLS, LTE sözleşmeleri)", "Kampüs ve DC iç ağ yönetimi — bkz. SVC-MSI-04 Managed Network", "SASE mimarisi (ZTNA, CASB, SWG) — bkz. SVC-MSI-07 Managed SASE", "Son kullanıcı cihaz (endpoint) yönetimi"]}, "SVC-MSI-06": {"amac": "Bu servis, VMware Cloud Foundation (VCF) altyapısının tüm katmanlarını kapsayan bütünleşik bir yönetim servisidir. vSphere compute, vSAN depolama, NSX ağ ve güvenlik ile SDDC Manager yaşam döngüsü yönetimi tek servis çat", "in_scope": [], "out_scope": ["Fiziksel sunucu, depolama ve ağ donanımı temini ve bakımı", "VMware lisans satın alımı ve yenilenmesi", "Guest OS yönetimi (VM içindeki işletim sistemi)", "Uygulama katmanı yönetimi ve veritabanı operasyonları", "Yedekleme yazılımı yönetimi — ayrı servis olarak değerlendirilebilir"]}, "SVC-IAS-03": {"amac": "Müşteri ağ altyapısının güvenlik odaklı konfigürasyon değerlendirmesini yapar. Firewall segmentasyonu, erişim kontrol listeleri, DMZ tasarımı, IT/OT ayrımı ve lateral movement engellerini güvenlik perspektifinden inceler. Ağın 'sağlam görünmesi' ile 'güvenli olması' arasındaki farkı ortaya çıkarır.", "in_scope": ["Firewall rule analizi — güvenlik perspektifinden segment geçişleri ve erişim politikaları", "IT/OT ağ ayrımı — OT segmentlerinin IT'den izolasyonu, purdue model uyumluluğu", "DMZ tasarım ve konfigürasyon kontrolü — erişim akışları, çift taraflı trafik riskleri", "ACL ve route-map güvenlik analizi — yetkisiz erişim yollarının tespiti", "VLAN hopping ve inter-VLAN güvenlik kontrolleri", "Tier 2–3: Lateral movement risk haritası — saldırgan perspektifinden erişim yolları", "Tier 3: Periyodik güvenlik drift tespiti — onaylı güvenlik baseline'ından sapma"], "out_scope": ["Genel network best practice analizi — bkz. SVC-IAS-02", "Firewall kural yaşam döngüsü yönetimi — bkz. SVC-FPR-01", "Güvenlik açığı (CVE) taraması — bkz. SVC-VRM", "Konfigürasyon değişikliklerinin uygulanması — bkz. SVC-MSI-01/04", "Aktif penetration testing — ayrı servis (SVC-PEN)"]}, "SVC-IAS-04": {"amac": "VMware vSphere / VCF ortamlarının güvenlik ve operasyonel konfigürasyonunu vendor hardening rehberleri (VMware Security Configuration Guide, CIS VMware Benchmarks) temelinde değerlendirir. Hypervisor güvenliği tüm sanal altyapının güvenliğidir.", "in_scope": ["ESXi host hardening — lockdown mode, SSH/shell erişim kontrolü, syslog, NTP", "vCenter Server güvenlik konfigürasyonu — kimlik doğrulama, role/permission analizi", "VM güvenlik konfigürasyonu — snapshot yönetimi, VM isolation, console erişim", "vSAN konfigürasyon analizi — encryption, witness konfigürasyonu", "NSX güvenlik değerlendirmesi — micro-segmentasyon, distributed firewall", "Tier 2–3: VCF yaşam döngüsü ve patch durumu analizi", "Tier 3: Sürekli hardening izleme ve değişiklik bildirimi"], "out_scope": ["Guest OS güvenlik analizi — VM içindeki işletim sistemi (bkz. SVC-VRM)", "Fiziksel sunucu (bare metal) güvenlik değerlendirmesi", "VMware lisans satın alımı ve yenilenmesi", "VCF operasyonel yönetim — bkz. SVC-MSI-06 Managed VCF"]}};
+</script>
+<script>
+const {
+  useState,
+  useCallback
+} = React;
+const G = "#2BBD6E";
+const DARK = "#0f1225";
+const DARK2 = "#1a1f3a";
+const CARD_BG = "#1e2440";
+const BORDER = "#2d3560";
+const TIER = {
+  mvp: {
+    bg: "#0d3320",
+    border: G,
+    badge: G,
+    label: "MVP · 0–3 Ay"
+  },
+  faz2: {
+    bg: "#1a2a0d",
+    border: "#84cc16",
+    badge: "#84cc16",
+    label: "Faz 2 · 3–6 Ay"
+  },
+  roadmap: {
+    bg: "#1f1a35",
+    border: "#a78bfa",
+    badge: "#a78bfa",
+    label: "Yol Haritası · 6–12 Ay"
+  },
+  "SVC-IAS-02": {
+    "amac": "Müşterinin ağ altyapısındaki switch, router ve WAN cihazlarının konfigürasyonunu vendor best practice standartlarına (CIS Benchmarks, NIST, üretici güvenli yapılandırma kılavuzları) göre analiz eder. Keşif değil, keşfedilen cihazların konfigürasyon kalitesi değerlendirilir.",
+    "in_scope": ["Switch konfigürasyon analizi — VLAN yapısı, STP/RSTP, port güvenliği, trunk konfigürasyonu", "Router konfigürasyon analizi — routing protokolü best practice, route filtering, prefix-list", "Yönetim düzlemi güvenliği — SSH sürümü, Telnet kontrolü, management ACL, banner", "AAA/kimlik doğrulama kontrolü — yerel kullanıcı, RADIUS/TACACS+ entegrasyon", "Zayıf ve varsayılan konfigürasyon tespiti — factory default, açık servisler", "Tier 2–3: WAN cihazları — SD-WAN, MPLS konfigürasyon değerlendirmesi", "Tier 2–3: NTP, logging (syslog), SNMP sürüm ve güvenlik kontrolü", "Tier 3: Periyodik konfigürasyon drift analizi — baseline sapma tespiti"],
+    "out_scope": ["Konfigürasyon değişikliklerinin uygulanması — bkz. SVC-MSI-04 Managed Network", "Güvenlik duvarı kural analizi — bkz. SVC-FPR-01 Firewall Policy Risk Analysis", "OT/ICS cihaz konfigürasyon analizi — bkz. SVC-CRA-03", "Kablosuz ağ (Wi-Fi) altyapısı konfigürasyon değerlendirmesi", "Aktif saldırı testi (penetration testing)"]
+  }
+};
+const ZONE = {
+  assess: {
+    border: "#38bdf8",
+    label: "ASSESS",
+    bg: "#0c1f2e"
+  },
+  protect: {
+    border: G,
+    label: "PROTECT",
+    bg: "#0d2018"
+  },
+  detect: {
+    border: "#f59e0b",
+    label: "DETECT",
+    bg: "#1f1500"
+  },
+  respond: {
+    border: "#f87171",
+    label: "RESPOND",
+    bg: "#1f0d0d"
+  },
+  comply: {
+    border: "#a78bfa",
+    label: "COMPLY",
+    bg: "#150d2a"
+  }
+};
+const CATS = [{
+  id: "kat1",
+  code: "KAT-1",
+  name: "Infrastructure Assurance",
+  zone: "assess",
+  services: [{
+    code: "SVC-IAS-01",
+    name: "IT/OT Discovery & Inventory",
+    tier: "mvp",
+    ready: true,
+    ctem: "Scoping",
+    tags: ["OT", "IT"]
+  }, {
+    code: "SVC-IAS-02",
+    name: "Network Config Assurance",
+    tier: "mvp",
+    ready: true,
+    tags: ["Network"]
+  }, {
+    code: "SVC-IAS-03",
+    name: "Network Security Config Assurance",
+    tier: "faz2",
+    ready: false,
+    tags: ["Network", "Security"]
+  }, {
+    code: "SVC-IAS-04",
+    name: "Virtualization Config Assurance",
+    tier: "faz2",
+    ready: false,
+    tags: ["VMware"]
+  }, {
+    code: "SVC-IAS-05",
+    name: "Infrastructure Health Check",
+    tier: "mvp",
+    ready: true,
+    tags: ["C-Level"]
+  }]
+}, {
+  id: "kat2",
+  code: "KAT-2",
+  name: "Vulnerability & Risk Management",
+  zone: "assess",
+  services: [{
+    code: "SVC-VRM-01",
+    name: "External Vulnerability Assessment",
+    tier: "mvp",
+    ready: true,
+    ctem: "Discovery + Prioritization",
+    tags: ["CVE", "EPSS"]
+  }, {
+    code: "SVC-VRM-02",
+    name: "Internal Vulnerability Assessment",
+    tier: "mvp",
+    ready: true,
+    ctem: "Discovery + Prioritization",
+    tags: ["CVE", "EPSS"]
+  }, {
+    code: "SVC-VRM-03",
+    name: "Vulnerability Lifecycle Management",
+    tier: "faz2",
+    ready: false,
+    ctem: "Mobilization",
+    tags: ["Lifecycle"]
+  }, {
+    code: "SVC-VRM-05",
+    name: "Exploitability & Risk Validation",
+    tier: "mvp",
+    ready: true,
+    ctem: "Validation",
+    tags: ["Nuclei"]
+  }, {
+    code: "SVC-WAV-01",
+    name: "Web App Vulnerability Assessment",
+    tier: "mvp",
+    ready: true,
+    tags: ["OWASP", "Web"]
+  }]
+}, {
+  id: "kat3",
+  code: "KAT-3",
+  name: "External Attack Surface & Brand Risk",
+  zone: "detect",
+  services: [{
+    code: "SVC-EAS-01",
+    name: "External Attack Surface Monitoring",
+    tier: "faz2",
+    ready: false,
+    ctem: "Discovery (External)",
+    tags: ["EASM"]
+  }, {
+    code: "SVC-EAS-02",
+    name: "Look-Alike Domain & Brand Monitoring",
+    tier: "faz2",
+    ready: false,
+    ctem: "Discovery (Look-alike)",
+    tags: ["Brand"]
+  }, {
+    code: "SVC-EAS-03",
+    name: "Digital Footprint Risk Monitoring",
+    tier: "roadmap",
+    ready: false,
+    tags: ["DarkWeb"]
+  }]
+}, {
+  id: "kat4",
+  code: "KAT-4",
+  name: "Firewall & Network Policy Risk",
+  zone: "assess",
+  services: [{
+    code: "SVC-FPR-01",
+    name: "Firewall Policy Risk Analysis",
+    tier: "mvp",
+    ready: true,
+    tags: ["Firewall"]
+  }, {
+    code: "SVC-FPR-02",
+    name: "Network Segmentation Assurance",
+    tier: "faz2",
+    ready: false,
+    tags: ["OT", "Segmentation"]
+  }, {
+    code: "SVC-FPR-03",
+    name: "Policy Drift Detection",
+    tier: "faz2",
+    ready: false,
+    tags: ["Drift"]
+  }]
+}, {
+  id: "kat5",
+  code: "KAT-5",
+  name: "Compliance & Regulatory Alignment",
+  zone: "comply",
+  services: [{
+    code: "SVC-CRA-01",
+    name: "Regulatory Mapping & Gap Analysis",
+    tier: "roadmap",
+    ready: false,
+    tags: ["KVKK", "ISO27001"]
+  }, {
+    code: "SVC-CRA-02",
+    name: "Audit-Ready Config Review",
+    tier: "roadmap",
+    ready: false,
+    tags: ["Audit"]
+  }, {
+    code: "SVC-CRA-03",
+    name: "OT/ICS Compliance Assessment",
+    tier: "roadmap",
+    ready: false,
+    tags: ["IEC62443", "OT"]
+  }]
+}, {
+  id: "kat6",
+  code: "KAT-6",
+  name: "Managed Security & Infrastructure",
+  zone: "protect",
+  services: [{
+    code: "SVC-MSI-01",
+    name: "Managed Firewall",
+    tier: "mvp",
+    ready: true,
+    tags: ["Managed", "Fortinet"]
+  }, {
+    code: "SVC-MSI-02",
+    name: "Managed WAF",
+    tier: "mvp",
+    ready: true,
+    tags: ["Managed", "F5", "FortiWeb"]
+  }, {
+    code: "SVC-MSI-03",
+    name: "Managed LB & App Delivery",
+    tier: "mvp",
+    ready: true,
+    tags: ["Managed", "F5"]
+  }, {
+    code: "SVC-MSI-04",
+    name: "Managed Network",
+    tier: "mvp",
+    ready: true,
+    tags: ["Managed", "Network"]
+  }, {
+    code: "SVC-MSI-05",
+    name: "Managed Secure SD-WAN",
+    tier: "mvp",
+    ready: true,
+    tags: ["Managed", "SD-WAN"]
+  }, {
+    code: "SVC-MSI-06",
+    name: "Managed VCF",
+    tier: "mvp",
+    ready: true,
+    tags: ["Managed", "VMware"]
+  }, {
+    code: "SVC-MSI-07",
+    name: "Managed SASE",
+    tier: "roadmap",
+    ready: false,
+    tags: ["Managed", "SASE", "FortiSASE"]
+  }, {
+    code: "SVC-MSI-08",
+    name: "Managed IDS/IPS",
+    tier: "faz2",
+    ready: false,
+    tags: ["Managed", "IDS"]
+  }, {
+    code: "SVC-MSI-09",
+    name: "Managed DDoS Protection",
+    tier: "faz2",
+    ready: false,
+    tags: ["Managed", "DDoS"]
+  }]
+}];
+const CTEM_PHASES = [{
+  id: "scoping",
+  num: 1,
+  label: "Scoping",
+  color: G,
+  svcs: ["SVC-IAS-01"]
+}, {
+  id: "discovery",
+  num: 2,
+  label: "Discovery",
+  color: "#38bdf8",
+  svcs: ["SVC-VRM-01", "SVC-VRM-02", "SVC-EAS-01", "SVC-EAS-02"]
+}, {
+  id: "prioritization",
+  num: 3,
+  label: "Prioritization",
+  color: "#a78bfa",
+  svcs: ["SVC-VRM-01", "SVC-VRM-02"]
+}, {
+  id: "validation",
+  num: 4,
+  label: "Validation",
+  color: "#f87171",
+  svcs: ["SVC-VRM-05"]
+}, {
+  id: "mobilization",
+  num: 5,
+  label: "Mobilization",
+  color: "#f59e0b",
+  svcs: ["SVC-VRM-03"]
+}];
+const CARD_DATA = window.CARD_DATA || {};
+function svc(code) {
+  const found = CATS.flatMap(c => c.services).find(s => s.code === code);
+  if (found) return found;
+  if (CARD_DATA[code]) return { code, name: code === "SVC-CTEM" ? "Continuous Threat Exposure Management" : code, tier: "mvp", ready: true, tags: ["CTEM"] };
+  return null;
+}
+function Tag({
+  text,
+  color
+}) {
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      background: `${color}18`,
+      color: color,
+      border: `1px solid ${color}30`,
+      borderRadius: 3,
+      padding: "1px 5px",
+      whiteSpace: "nowrap"
+    }
+  }, text);
+}
+function ServiceCard({
+  code,
+  onSelect,
+  highlight,
+  compact
+}) {
+  const s = svc(code);
+  if (!s) return null;
+  const t = TIER[s.tier];
+  const lit = !highlight || highlight.includes(s.code);
+  return /*#__PURE__*/React.createElement("div", {
+    onClick: () => onSelect(s),
+    style: {
+      background: lit ? "#161b30" : "#0f1225",
+      border: `1px solid ${lit ? t.border : BORDER}`,
+      borderLeft: `3px solid ${t.border}`,
+      borderRadius: 6,
+      padding: compact ? "5px 7px" : "7px 9px",
+      cursor: "pointer",
+      transition: "all 0.15s",
+      opacity: lit ? 1 : 0.25,
+      boxShadow: lit ? `0 0 6px ${t.border}30` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: 4,
+      marginBottom: 3
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: t.border,
+      fontWeight: 700,
+      fontFamily: "monospace",
+      opacity: 0.8
+    }
+  }, s.code), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 3
+    }
+  }, s.ctem && /*#__PURE__*/React.createElement(Tag, {
+    text: "CTEM",
+    color: "#38bdf8"
+  }), s.ready ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: G
+    }
+  }, "\u2713") : /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: "#f59e0b"
+    }
+  }, "\u2026"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      fontWeight: 600,
+      color: "#e2e8f0",
+      lineHeight: 1.3
+    }
+  }, s.name), !compact && s.tags && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 3,
+      marginTop: 4,
+      flexWrap: "wrap"
+    }
+  }, s.tags.map(tg => /*#__PURE__*/React.createElement(Tag, {
+    key: tg,
+    text: tg,
+    color: "#64748b"
+  }))));
+}
+function CatBlock({
+  cat,
+  onSelect,
+  highlight
+}) {
+  const z = ZONE[cat.zone];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: z.bg,
+      border: `1px solid ${z.border}25`,
+      borderTop: `2px solid ${z.border}`,
+      borderRadius: 8,
+      padding: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      marginBottom: 7
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 8,
+      color: z.border,
+      fontWeight: 700,
+      fontFamily: "monospace"
+    }
+  }, cat.code), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#e2e8f0",
+      fontWeight: 600,
+      marginTop: 1,
+      lineHeight: 1.2
+    }
+  }, cat.name)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: z.border,
+      background: `${z.border}12`,
+      borderRadius: 3,
+      padding: "2px 5px"
+    }
+  }, z.label)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 5
+    }
+  }, cat.services.map(s => /*#__PURE__*/React.createElement(ServiceCard, {
+    key: s.code,
+    code: s.code,
+    onSelect: onSelect,
+    highlight: highlight
+  }))));
+}
+function DetailPanel({
+  s,
+  onClose
+}) {
+  if (!s) return null;
+  const t = TIER[s.tier];
+  const data = CARD_DATA[s.code] || CARD_DATA["SVC-VRM-01"];
+  const hasData = data && data.amac;
+  const cat = CATS.find(c => c.services.some(sv => sv.code === s.code));
+  const z = cat ? ZONE[cat.zone] : null;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 300,
+      minWidth: 300,
+      background: DARK2,
+      borderLeft: `1px solid ${BORDER}`,
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#12172b",
+      borderBottom: `1px solid ${BORDER}`,
+      padding: "10px 14px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: t.border,
+      fontWeight: 700,
+      fontFamily: "monospace"
+    }
+  }, s.code), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontWeight: 700,
+      color: "#fff",
+      lineHeight: 1.3,
+      marginTop: 2
+    }
+  }, s.name)), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      background: "none",
+      border: "none",
+      color: "#64748b",
+      cursor: "pointer",
+      fontSize: 18,
+      lineHeight: 1
+    }
+  }, "\xD7")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      overflow: "auto",
+      padding: 14,
+      display: "flex",
+      flexDirection: "column",
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5,
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      background: t.bg,
+      color: t.border,
+      border: `1px solid ${t.border}40`,
+      borderRadius: 4,
+      padding: "3px 8px"
+    }
+  }, t.label), s.ready ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      background: "#0d3320",
+      color: G,
+      borderRadius: 4,
+      padding: "3px 8px"
+    }
+  }, "\u2713 Servis Kart\u0131 Haz\u0131r") : /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      background: "#2a1f00",
+      color: "#f59e0b",
+      borderRadius: 4,
+      padding: "3px 8px"
+    }
+  }, "\u23F3 Servis Kart\u0131 Yaz\u0131lacak"), s.ctem && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      background: "#0c1f2e",
+      color: "#38bdf8",
+      borderRadius: 4,
+      padding: "3px 8px"
+    }
+  }, "CTEM: ", s.ctem), z && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      background: `${z.border}12`,
+      color: z.border,
+      borderRadius: 4,
+      padding: "3px 8px"
+    }
+  }, z.label)), s.tags && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      flexWrap: "wrap"
+    }
+  }, s.tags.map(tg => /*#__PURE__*/React.createElement(Tag, {
+    key: tg,
+    text: tg,
+    color: "#64748b"
+  }))), hasData ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#12172b",
+      borderRadius: 7,
+      padding: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: G,
+      fontWeight: 700,
+      marginBottom: 5,
+      letterSpacing: 1
+    }
+  }, "SERV\u0130S\u0130N AMACI"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#94a3b8",
+      lineHeight: 1.6
+    }
+  }, data.amac)), data.in_scope && data.in_scope.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#0d2018",
+      border: `1px solid ${G}25`,
+      borderRadius: 7,
+      padding: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: G,
+      fontWeight: 700,
+      marginBottom: 6,
+      letterSpacing: 1
+    }
+  }, "\u2713 KAPSAM DAH\u0130L\u0130"), data.in_scope.map((item, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 4,
+      alignItems: "flex-start"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: G,
+      fontSize: 10,
+      marginTop: 1,
+      flexShrink: 0
+    }
+  }, "\u203A"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: "#94a3b8",
+      lineHeight: 1.4
+    }
+  }, item)))), data.out_scope && data.out_scope.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#1f0d0d",
+      border: "1px solid #f8717125",
+      borderRadius: 7,
+      padding: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: "#f87171",
+      fontWeight: 700,
+      marginBottom: 6,
+      letterSpacing: 1
+    }
+  }, "\u2717 KAPSAM DI\u015EI"), data.out_scope.map((item, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 4,
+      alignItems: "flex-start"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#f87171",
+      fontSize: 10,
+      marginTop: 1,
+      flexShrink: 0
+    }
+  }, "\u203A"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: "#94a3b8",
+      lineHeight: 1.4
+    }
+  }, item))))) : /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#1f1a00",
+      border: "1px solid #f59e0b25",
+      borderRadius: 7,
+      padding: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#f59e0b",
+      fontWeight: 600,
+      marginBottom: 4
+    }
+  }, "Servis Kart\u0131 Hen\xFCz Yaz\u0131lmad\u0131"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#64748b"
+    }
+  }, "Bu servis ", TIER[s.tier].label, " faz\u0131nda planlanmaktad\u0131r.")), s.ctem && (() => {
+    const phase = CTEM_PHASES.find(p => p.svcs.includes(s.code));
+    if (!phase) return null;
+    const related = phase.svcs.filter(c => c !== s.code).map(c => svc(c)).filter(Boolean);
+    if (!related.length) return null;
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        background: "#0c1f2e",
+        border: "1px solid #38bdf825",
+        borderRadius: 7,
+        padding: 10
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 9,
+        color: "#38bdf8",
+        fontWeight: 700,
+        marginBottom: 6,
+        letterSpacing: 1
+      }
+    }, "CTEM \u2014 \u0130LG\u0130L\u0130 SERV\u0130SLER"), related.map(r => /*#__PURE__*/React.createElement("div", {
+      key: r.code,
+      style: {
+        fontSize: 10,
+        color: "#64748b",
+        padding: "2px 0"
+      }
+    }, "\u2192 ", r.code, " \u2014 ", r.name)));
+  })(), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#12172b",
+      borderRadius: 7,
+      padding: 10,
+      marginTop: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: "#64748b",
+      marginBottom: 3
+    }
+  }, "DOK\xDCMAN"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: s.ready ? G : "#3d4a5c",
+      fontFamily: "monospace"
+    }
+  }, s.ready ? `${s.code}_Servis-Karti_v1.docx` : "— henüz yazılmadı —"))));
+}
+function App() {
+  const [selected, setSelected] = useState(null);
+  const [view, setView] = useState("console");
+  const [activePhase, setActivePhase] = useState(null);
+  const [searchQ, setSearchQ] = useState("");
+  const allSvcs = CATS.flatMap(c => c.services);
+  const stats = {
+    total: allSvcs.length + 1,
+    ready: allSvcs.filter(s => s.ready).length + 1,
+    mvp: allSvcs.filter(s => s.tier === "mvp").length + 1,
+    faz2: allSvcs.filter(s => s.tier === "faz2").length,
+    roadmap: allSvcs.filter(s => s.tier === "roadmap").length
+  };
+  const searchFilter = searchQ.trim().toLowerCase();
+  const searchHighlight = searchFilter ? allSvcs.filter(s => s.code.toLowerCase().includes(searchFilter) || s.name.toLowerCase().includes(searchFilter) || (s.tags || []).some(t => t.toLowerCase().includes(searchFilter)) || (s.ctem || "").toLowerCase().includes(searchFilter)).map(s => s.code) : null;
+  const phaseHighlight = activePhase ? CTEM_PHASES.find(p => p.id === activePhase)?.svcs : null;
+  const highlight = searchHighlight || phaseHighlight;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh",
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: DARK2,
+      borderBottom: `1px solid ${BORDER}`,
+      padding: "10px 18px",
+      display: "flex",
+      gap: 16,
+      alignItems: "center",
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginRight: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: G,
+      fontWeight: 700,
+      letterSpacing: 3
+    }
+  }, "SIAFLEX"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 16,
+      fontWeight: 800,
+      color: "#fff",
+      lineHeight: 1
+    }
+  }, "Service Console"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: "#475569"
+    }
+  }, "Infrastructure Lifecycle Partner for IT & OT \xB7 2026")), [{
+    l: "Toplam",
+    v: stats.total,
+    c: "#94a3b8"
+  }, {
+    l: "Hazır ✓",
+    v: stats.ready,
+    c: G
+  }, {
+    l: "MVP",
+    v: stats.mvp,
+    c: G
+  }, {
+    l: "Faz 2",
+    v: stats.faz2,
+    c: "#84cc16"
+  }, {
+    l: "Roadmap",
+    v: stats.roadmap,
+    c: "#a78bfa"
+  }].map(s => /*#__PURE__*/React.createElement("div", {
+    key: s.l,
+    style: {
+      textAlign: "center",
+      padding: "0 8px",
+      borderLeft: `1px solid ${BORDER}`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 18,
+      fontWeight: 800,
+      color: s.c,
+      lineHeight: 1
+    }
+  }, s.v), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 8,
+      color: "#475569",
+      marginTop: 1
+    }
+  }, s.l))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginLeft: 8,
+      flex: 1,
+      maxWidth: 240
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: searchQ,
+    onChange: e => setSearchQ(e.target.value),
+    placeholder: "Ara \u2014 SVC kodu, isim, tag...",
+    style: {
+      width: "100%",
+      background: "#12172b",
+      border: `1px solid ${BORDER}`,
+      borderRadius: 6,
+      padding: "6px 10px",
+      color: "#e2e8f0",
+      fontSize: 11,
+      outline: "none"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5,
+      marginLeft: "auto"
+    }
+  }, [{
+    id: "console",
+    l: "🏠 Ana Sayfa"
+  }, {
+    id: "infra",
+    l: "🔧 IT/OT Infrastructure Assurance"
+  }, {
+    id: "catalog",
+    l: "🔒 Security Services"
+  }, {
+    id: "ctem",
+    l: "🔄 CTEM"
+  }, {
+    id: "lifecycle",
+    l: "📅 Lifecycle"
+  }, {
+    id: "model",
+    l: "🧩 SecureStack"
+  }].map(v => /*#__PURE__*/React.createElement("button", {
+    key: v.id,
+    onClick: () => {
+      setView(v.id);
+      setActivePhase(null);
+      setSearchQ("");
+    },
+    style: {
+      background: view === v.id ? G : "#1e2440",
+      color: view === v.id ? "#000" : "#94a3b8",
+      border: `1px solid ${view === v.id ? G : BORDER}`,
+      borderRadius: 6,
+      padding: "6px 12px",
+      cursor: "pointer",
+      fontSize: 11,
+      fontWeight: 600
+    }
+  }, v.l)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#12172b",
+      borderBottom: `1px solid ${BORDER}`,
+      padding: "5px 18px",
+      display: "flex",
+      gap: 16,
+      alignItems: "center",
+      flexWrap: "wrap",
+      flexShrink: 0
+    }
+  }, Object.entries(TIER).map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+    key: k,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 8,
+      height: 8,
+      background: v.border,
+      borderRadius: 2
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: "#64748b"
+    }
+  }, v.label))), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: BORDER
+    }
+  }, "|"), Object.entries(ZONE).map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+    key: k,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 8,
+      height: 8,
+      background: v.border,
+      borderRadius: 2,
+      opacity: .7
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: "#64748b"
+    }
+  }, v.label))), /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: "auto",
+      fontSize: 8,
+      color: G
+    }
+  }, "\u2713 Kart haz\u0131r"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: "#f59e0b"
+    }
+  }, "\u2026 Yaz\u0131lacak"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 8,
+      color: "#38bdf8"
+    }
+  }, "CTEM bile\u015Feni")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      display: "flex",
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      overflow: "auto",
+      padding: 14
+    }
+  }, view === "console" && /*#__PURE__*/React.createElement("div", {
+    style: { padding: "24px 20px", maxWidth: 900, margin: "0 auto" }
+  },
+    /* Hero */
+    /*#__PURE__*/React.createElement("div", { style: { textAlign: "center", marginBottom: 40, paddingTop: 16 } },
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: G, fontWeight: 700, letterSpacing: 4, fontFamily: "monospace" } }, "SIAFLEX · SERVICE CONSOLE"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 28, fontWeight: 800, color: "#fff", margin: "10px 0 8px", lineHeight: 1.2 } }, "Infrastructure Lifecycle Partner"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 14, color: "#94a3b8", marginBottom: 4 } }, "for IT & OT"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 12, color: "#475569", maxWidth: 520, margin: "12px auto 0", lineHeight: 1.7 } },
+        "Müşterinin ihtiyacına göre şekillenen, assessment'tan başlayan, lifecycle boyunca süren bütünleşik servis çerçevesi."
+      )
+    ),
+    /* Framework kartları */
+    /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 28 } },
+      ...[
+        { id: "infra", icon: "🔧", color: "#38bdf8", title: "IT/OT Infrastructure Assurance Services", sub: "Infrastructure Lifecycle Partner for IT & OT", desc: "Assessment'tan başlayan, müşterinin ihtiyacına göre şekillenen altyapı yaşam döngüsü. Network backbone, firewall, WAF, virtualization — tek seferlik, periyodik veya managed.", tiers: ["Tier A · Assess & Report", "Tier B · Assess + Remediate", "Tier C · Assess + Managed Service"], badge: "Olgun" },
+        { id: "catalog", icon: "🔒", color: G, title: "Security Services", sub: "Master Security Catalog — 30 servis", desc: "Güvenlik odaklı servis portföyü. Vulnerability management, firewall policy risk, external attack surface, compliance — 7 kategori, faz bazlı yol haritası.", tiers: ["MVP · 14 servis", "Faz 2 · 9 servis", "Roadmap · 7 servis"], badge: "Aktif" },
+        { id: "ctem", icon: "🔄", color: "#818cf8", title: "Continuous Threat Exposure Management", sub: "Gartner CTEM Framework — 5 Faz", desc: "Sürekli tehdit maruziyet yönetimi. Scoping → Discovery → Prioritization → Validation → Mobilization döngüsü. EPSS + KEV entegrasyonu.", tiers: ["Scoping", "Discovery", "Prioritization + Validation + Mobilization"], badge: "Aktif" },
+        { id: "model", icon: "🧩", color: "#a78bfa", title: "SecureStack Model", sub: "Katmanlı güvenlik servis mimarisi", desc: "5 katmanlı güvenlik servis modeli. Protect → Assess → Discover → Detect → Comply. Faz bazlı yol haritasıyla görselleştirilmiş.", tiers: ["Protect · KAT-6", "Assess · KAT-1+4", "Discover + Detect + Comply"], badge: "Görsel" },
+      ].map(fw =>
+        /*#__PURE__*/React.createElement("div", {
+          key: fw.id,
+          onClick: () => setView(fw.id),
+          style: { background: "#12172b", border: `1px solid ${fw.color}30`, borderLeft: `3px solid ${fw.color}`, borderRadius: 10, padding: "18px 20px", cursor: "pointer", transition: "all .18s" },
+          onMouseEnter: e => { e.currentTarget.style.background = "#1a2035"; e.currentTarget.style.borderColor = fw.color + "60"; },
+          onMouseLeave: e => { e.currentTarget.style.background = "#12172b"; e.currentTarget.style.borderColor = fw.color + "30"; }
+        },
+          /*#__PURE__*/React.createElement("div", { style: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 } },
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 22 } }, fw.icon),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 9, fontWeight: 700, background: fw.color + "15", color: fw.color, border: `1px solid ${fw.color}30`, borderRadius: 4, padding: "2px 8px", fontFamily: "monospace" } }, fw.badge)
+          ),
+          /*#__PURE__*/React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 3 } }, fw.title),
+          /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: fw.color, fontFamily: "monospace", marginBottom: 8, opacity: .8 } }, fw.sub),
+          /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, color: "#64748b", lineHeight: 1.6, marginBottom: 12 } }, fw.desc),
+          /*#__PURE__*/React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap" } },
+            ...fw.tiers.map(t =>
+              /*#__PURE__*/React.createElement("div", { key: t, style: { fontSize: 9, background: "#1e2440", border: `1px solid rgba(255,255,255,.08)`, borderRadius: 4, padding: "3px 8px", color: "#94a3b8" } }, t)
+            )
+          ),
+          /*#__PURE__*/React.createElement("div", { style: { marginTop: 14, fontSize: 10, color: fw.color, fontWeight: 600 } }, "Görüntüle →")
+        )
+      )
+    ),
+    /* 3 Tier açıklama */
+    /*#__PURE__*/React.createElement("div", { style: { background: "linear-gradient(135deg,#0a1f14,#071a10)", border: `1px solid ${G}30`, borderRadius: 10, padding: "18px 22px" } },
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: G, fontWeight: 700, letterSpacing: 2, fontFamily: "monospace", marginBottom: 14 } }, "EVRENSEL ENGAGEMENT MODELİ — TÜM FRAMEWORK'LERE UYGULANIR"),
+      /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 } },
+        ...[
+          { tier: "Tier A", name: "Assess & Report", color: "#38bdf8", desc: "Tam assessment, çıktılar teslim. Yıllık kontrol için ideal.", items: ["Current state analizi", "Gap raporu & to-do list", "C-Level + teknik rapor", "10 call/yıl standart destek"] },
+          { tier: "Tier B", name: "Assess + Remediate", color: G, desc: "Bulgular proje bazlı giderilir, remediation takibi yapılır.", items: ["Tier A + remediation projesi", "Değişiklik yönetimi", "Retest & doğrulama", "Periyodik assessment"] },
+          { tier: "Tier C", name: "Assess + Managed", color: "#a78bfa", desc: "Assessment ile başlar, operasyon devredilir, lifecycle döner.", items: ["Tier B + tam operasyon", "SLA garantisi", "Proaktif izleme", "Otomatik lifecycle yenileme"] },
+        ].map(t =>
+          /*#__PURE__*/React.createElement("div", { key: t.tier, style: { background: t.color + "08", border: `1px solid ${t.color}25`, borderRadius: 8, padding: "14px 16px" } },
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 9, color: t.color, fontWeight: 700, fontFamily: "monospace", marginBottom: 4 } }, t.tier),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 4 } }, t.name),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: "#64748b", marginBottom: 10, lineHeight: 1.5 } }, t.desc),
+            ...t.items.map(item =>
+              /*#__PURE__*/React.createElement("div", { key: item, style: { display: "flex", gap: 6, alignItems: "flex-start", fontSize: 10, color: "#94a3b8", marginBottom: 4 } },
+                /*#__PURE__*/React.createElement("span", { style: { color: t.color, flexShrink: 0 } }, "›"),
+                item
+              )
+            )
+          )
+        )
+      )
+    )
+  ),
+  view === "infra" && /*#__PURE__*/React.createElement("div", {
+    style: { padding: "0 0 40px", maxWidth: 900, margin: "0 auto" }
+  },
+    /* Başlık */
+    /*#__PURE__*/React.createElement("div", { style: { textAlign: "center", padding: "24px 20px 20px", borderBottom: "1px solid rgba(56,189,248,.15)", marginBottom: 0 } },
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: "#38bdf8", fontWeight: 700, letterSpacing: 3, fontFamily: "monospace" } }, "FRAMEWORK 1 OF 4"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: "#fff", margin: "8px 0 4px" } }, "IT/OT Infrastructure Assurance Services"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, color: "#475569" } }, "Assessment'tan başlayan · Regülasyon & best practice karşılaştırmalı · Tek seferlik / Periyodik / Managed")
+    ),
+    /* Assessment — Zorunlu */
+    /*#__PURE__*/React.createElement("div", { style: { margin: "0 20px", background: "linear-gradient(135deg,#0a1f14,#0c1a20)", border: "2px solid #2BBD6E", borderTop: "none", padding: "20px 22px 18px", position: "relative" } },
+      /*#__PURE__*/React.createElement("div", { style: { position: "absolute", top: -11, left: 22, background: G, color: "#000", fontSize: 9, fontWeight: 800, letterSpacing: 2, padding: "2px 10px", borderRadius: 20, fontFamily: "monospace" } }, "① ZORUNLU BAŞLANGIÇ — HER SERVİS İÇİN"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 4 } }, "Current State Assessment"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, color: "#64748b", marginBottom: 16, lineHeight: 1.6, maxWidth: 680 } },
+        "Müşteri ne isterse istesin — network, firewall, WAF, virtualization, full altyapı — önce ilgili kategori için mevcut durum analizi yapılır. Vendor best practice, ITIL, ISO 27001/27031, sektör regülasyonları ve üretici standartlarıyla karşılaştırılır. Çıktı: gap raporu + to-do list → servis kapsamı belirlenir."
+      ),
+      /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 } },
+        ...[
+          { icon: "🔍", name: "IT/OT Discovery & Inventory", code: "IAS-01", desc: "Tüm varlık keşfi, envanter, topoloji haritası." },
+          { icon: "🏥", name: "Infrastructure Health Check", code: "IAS-05", desc: "Tüm katmanlar sağlık değerlendirmesi. C-level + teknik rapor." },
+          { icon: "📐", name: "Config Assurance — Network", code: "IAS-02", desc: "Vendor best practice & standart uyumluluk." },
+          { icon: "🛡️", name: "Security Config Assurance", code: "IAS-03", desc: "Firewall, segmentasyon, IT/OT ayrımı, DMZ." },
+          { icon: "☁️", name: "Virtualization Config Assurance", code: "IAS-04", desc: "VMware VCF/vSphere hardening ve drift analizi." },
+          { icon: "⚖️", name: "Compliance & Regulatory Mapping", code: "CRA-01", desc: "ITIL, ISO 27001/27031, KVKK, BDDK, IEC 62443." },
+        ].map(c =>
+          /*#__PURE__*/React.createElement("div", { key: c.code, style: { background: "rgba(43,189,110,.06)", border: "1px solid rgba(43,189,110,.2)", borderRadius: 7, padding: "10px 12px" } },
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 16, marginBottom: 5 } }, c.icon),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: "#e2e8f0", marginBottom: 2 } }, c.name),
+            /*#__PURE__*/React.createElement("div", { style: { fontFamily: "monospace", fontSize: 9, color: G, opacity: .7, marginBottom: 5 } }, c.code),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: "#64748b", lineHeight: 1.4 } }, c.desc)
+          )
+        )
+      )
+    ),
+    /* Connector */
+    /*#__PURE__*/React.createElement("div", { style: { margin: "0 20px", background: "linear-gradient(180deg,#0a1f14,#0e1a2e)", borderLeft: "2px solid rgba(43,189,110,.2)", borderRight: "2px solid rgba(43,189,110,.2)", padding: "12px 22px", display: "flex", alignItems: "center", gap: 10, color: G, fontSize: 11, fontWeight: 600, letterSpacing: 1 } },
+      "↓  Rapor & Gap Analizi tamamlandı — müşteri delivery modelini seçer"
+    ),
+    /* 3 Tier */
+    /*#__PURE__*/React.createElement("div", { style: { margin: "0 20px", border: "2px solid rgba(43,189,110,.3)", borderTop: "none", borderRadius: "0 0 12px 12px", overflow: "hidden" } },
+      /*#__PURE__*/React.createElement("div", { style: { background: "linear-gradient(135deg,#0a1f14,#071a10)", padding: "14px 22px", borderBottom: "1px solid rgba(43,189,110,.15)" } },
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#fff" } }, "② Engagement Modeli — Müşteri Seçer"),
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: "#64748b", marginTop: 2 } }, "Aynı assessment çıktısından üç farklı yolda devam. Yıllık abonelik · Tier değişikliği her dönemde mümkün")
+      ),
+      /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr" } },
+        ...[
+          { tier: "Tier A", name: "Assess & Report", color: "#38bdf8", highlight: false, items: ["Tam current state assessment", "Gap raporu & to-do list", "C-Level + teknik rapor teslimi", "Yıllık kontrol seçeneği", "10 call/yıl standart destek"] },
+          { tier: "Tier B", name: "Assess + Remediate", color: G, highlight: true, items: ["Tier A tüm çıktılar dahil", "Proje bazlı remediation", "Değişiklik yönetimi & uygulama", "Retest & doğrulama", "Periyodik re-assessment"] },
+          { tier: "Tier C", name: "Assess + Managed Service", color: "#a78bfa", highlight: false, items: ["Tier B tüm çıktılar dahil", "Operasyon Siaflex'e devredilir", "SLA garantisi & proaktif izleme", "Lifecycle otomatik döner", "Siaflex müşterinin IT ortağı olur"] },
+        ].map((t, i) =>
+          /*#__PURE__*/React.createElement("div", { key: t.tier, style: { padding: "20px 18px", background: t.highlight ? t.color + "08" : "transparent", borderRight: i < 2 ? "1px solid rgba(43,189,110,.1)" : "none" } },
+            /*#__PURE__*/React.createElement("div", { style: { fontFamily: "monospace", fontSize: 9, color: t.color, fontWeight: 700, marginBottom: 5 } }, t.tier),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 12 } }, t.name),
+            ...t.items.map(item =>
+              /*#__PURE__*/React.createElement("div", { key: item, style: { display: "flex", gap: 6, fontSize: 10, color: "#94a3b8", marginBottom: 6, lineHeight: 1.4 } },
+                /*#__PURE__*/React.createElement("span", { style: { color: t.color, flexShrink: 0 } }, "›"),
+                item
+              )
+            ),
+            t.highlight && /*#__PURE__*/React.createElement("div", { style: { marginTop: 12, fontSize: 9, fontWeight: 800, background: t.color, color: "#000", borderRadius: 4, padding: "3px 10px", display: "inline-block", fontFamily: "monospace" } }, "ÖNERİLEN")
+          )
+        )
+      )
+    ),
+    /* Lifecycle Bar */
+    /*#__PURE__*/React.createElement("div", { style: { margin: "16px 20px 0", background: "linear-gradient(135deg,#0a1f14,#071a10)", border: `1px solid ${G}30`, borderRadius: 10, padding: "14px 20px", display: "flex", alignItems: "center", gap: 0 } },
+      /*#__PURE__*/React.createElement("div", { style: { paddingRight: 18, borderRight: `1px solid ${G}20`, marginRight: 18, whiteSpace: "nowrap" } },
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 8, color: G, fontWeight: 700, letterSpacing: 3, fontFamily: "monospace" } }, "CUSTOMER LIFECYCLE"),
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#fff", marginTop: 2 } }, "Siaflex ile Yolculuk")
+      ),
+      /*#__PURE__*/React.createElement("div", { style: { display: "flex", flex: 1, alignItems: "center" } },
+        ...["🔍 Assess", "📐 Design", "🛡️ Protect", "📊 Monitor", "⚡ Optimize", "🔁 Renew"].flatMap((phase, i, arr) => [
+          /*#__PURE__*/React.createElement("div", { key: phase, style: { flex: 1, textAlign: "center", borderRight: i < arr.length-1 ? `1px solid ${G}15` : "none", padding: "4px 0" } },
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, color: G, fontWeight: 600 } }, phase)
+          ),
+          i < arr.length-1 ? /*#__PURE__*/React.createElement("div", { key: `a${i}`, style: { color: G, opacity: .3, fontSize: 12 } }, "›") : null
+        ].filter(Boolean))
+      )
+    )
+  ),
+  view === "catalog" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    onClick: () => setSelected({code:"SVC-CTEM", name:"Continuous Threat Exposure Management", tier:"mvp", ready:true, ctem:"All Phases", tags:["CTEM","EPSS","KEV","EASM"]}),
+    style: {
+      background: "linear-gradient(135deg,#0d2018,#0c1f2e)",
+      border: `2px solid ${G}`,
+      borderRadius: 10,
+      padding: "11px 14px",
+      marginBottom: 12,
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 8,
+      color: G,
+      fontWeight: 700,
+      letterSpacing: 2
+    }
+  }, "\xC7ATI SERV\u0130S PAKET\u0130"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      fontWeight: 800,
+      color: "#fff"
+    }
+  }, "SVC-CTEM \u2014 Continuous Threat Exposure Management"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#64748b",
+      marginTop: 2
+    }
+  }, "Scoping \u2192 Discovery \u2192 Prioritization \u2192 Validation \u2192 Mobilization \xB7 T\xFCm CTEM a\u015Famalar\u0131 tek s\xF6zle\u015Fme")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      flexWrap: "wrap",
+      maxWidth: 280
+    }
+  }, ["IAS-01", "VRM-01", "VRM-02", "VRM-05", "EAS-01", "EAS-02"].map(c => /*#__PURE__*/React.createElement("span", {
+    key: c,
+    style: {
+      fontSize: 8,
+      background: "#0d3320",
+      color: G,
+      border: `1px solid ${G}40`,
+      borderRadius: 3,
+      padding: "2px 6px"
+    }
+  }, c)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(3,1fr)",
+      gap: 10
+    }
+  }, CATS.map(cat => /*#__PURE__*/React.createElement(CatBlock, {
+    key: cat.id,
+    cat: cat,
+    onSelect: setSelected,
+    highlight: highlight
+  })))), view === "ctem" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 18
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: G,
+      fontWeight: 700,
+      letterSpacing: 3
+    }
+  }, "CTEM FRAMEWORK"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 18,
+      fontWeight: 800,
+      color: "#fff"
+    }
+  }, "Continuous Threat Exposure Management"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#475569"
+    }
+  }, "A\u015Famaya t\u0131kla \u2192 ilgili servisler \xF6ne \xE7\u0131ks\u0131n")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 0,
+      marginBottom: 18
+    }
+  }, CTEM_PHASES.map((ph, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: ph.id
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: () => setActivePhase(activePhase === ph.id ? null : ph.id),
+    style: {
+      width: 100,
+      height: 86,
+      background: activePhase === ph.id ? `${ph.color}22` : "#1a1f3a",
+      border: `2px solid ${activePhase === ph.id ? ph.color : BORDER}`,
+      borderRadius: 10,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      transition: "all .18s",
+      gap: 4,
+      boxShadow: activePhase === ph.id ? `0 0 14px ${ph.color}50` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 22,
+      fontWeight: 900,
+      color: ph.color,
+      lineHeight: 1
+    }
+  }, ph.num), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      fontWeight: 700,
+      color: activePhase === ph.id ? "#fff" : "#94a3b8",
+      textAlign: "center",
+      lineHeight: 1.2
+    }
+  }, ph.label), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 8,
+      color: "#475569"
+    }
+  }, ph.svcs.length, " servis")), i < CTEM_PHASES.length - 1 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 20,
+      height: 2,
+      background: `linear-gradient(90deg,${CTEM_PHASES[i].color},${CTEM_PHASES[i + 1].color})`
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#475569",
+      fontSize: 12
+    }
+  }, "\u203A"))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(5,1fr)",
+      gap: 6,
+      marginBottom: 16
+    }
+  }, [{
+    ph: "scoping",
+    c: G,
+    tools: ["Workshop", "SVC-IAS-01"]
+  }, {
+    ph: "discovery",
+    c: "#38bdf8",
+    tools: ["OpenVAS", "Nmap", "Amass", "Nuclei", "DNStwist"]
+  }, {
+    ph: "prioritization",
+    c: "#a78bfa",
+    tools: ["EPSS API", "CISA KEV", "DefectDojo"]
+  }, {
+    ph: "validation",
+    c: "#f87171",
+    tools: ["Nuclei CVE", "FP Kırpma", "SVC-VRM-05"]
+  }, {
+    ph: "mobilization",
+    c: "#f59e0b",
+    tools: ["DefectDojo Ticket", "PDF Rapor", "Patch Koord."]
+  }].map(col => /*#__PURE__*/React.createElement("div", {
+    key: col.ph,
+    style: {
+      background: activePhase === col.ph ? `${col.c}15` : "#12172b",
+      border: `1px solid ${activePhase === col.ph ? col.c : BORDER}`,
+      borderRadius: 7,
+      padding: 9,
+      transition: "all .18s"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 8,
+      color: col.c,
+      fontWeight: 700,
+      marginBottom: 5
+    }
+  }, "ARA\xC7LAR"), col.tools.map(t => /*#__PURE__*/React.createElement("div", {
+    key: t,
+    style: {
+      fontSize: 9,
+      color: "#64748b",
+      background: "#1e2440",
+      borderRadius: 3,
+      padding: "2px 5px",
+      marginBottom: 3
+    }
+  }, t))))), activePhase && (() => {
+    const ph = CTEM_PHASES.find(p => p.id === activePhase);
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        background: `${ph.color}0e`,
+        border: `1px solid ${ph.color}35`,
+        borderRadius: 9,
+        padding: 12
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: ph.color,
+        fontWeight: 700,
+        marginBottom: 9
+      }
+    }, "A\u015Fama ", ph.num, ": ", ph.label, " \u2014 Siaflex Servis Kar\u015F\u0131l\u0131klar\u0131"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "grid",
+        gridTemplateColumns: "repeat(3,1fr)",
+        gap: 7
+      }
+    }, ph.svcs.map(c => /*#__PURE__*/React.createElement(ServiceCard, {
+      key: c,
+      code: c,
+      onSelect: setSelected,
+      highlight: null
+    }))));
+  })(), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      background: "#1a1200",
+      border: "1px solid #f59e0b30",
+      borderRadius: 8,
+      padding: 11,
+      display: "flex",
+      gap: 10,
+      alignItems: "center"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 18
+    }
+  }, "\u2699\uFE0F"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#f59e0b",
+      fontWeight: 700
+    }
+  }, "OT/ICS Geni\u015Fletme \u2014 Planlanan"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#64748b"
+    }
+  }, "Malcolm (pasif OT trafik analizi) + FortiGate Device Detection + IEC 62443 \u2192 Enerji, utilities, kritik altyap\u0131 sekt\xF6r\xFC i\xE7in OT CTEM katman\u0131.")))), view === "lifecycle" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 18
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: G,
+      fontWeight: 700,
+      letterSpacing: 3
+    }
+  }, "YOL HAR\u0130TASI"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 18,
+      fontWeight: 800,
+      color: "#fff"
+    }
+  }, "Servis Geli\u015Ftirme Lifecycle")), [{
+    tier: "mvp",
+    label: "MVP · 0–3 Ay",
+    desc: "14/14 servis kartı hazır — satılabilir ve teslim edilebilir",
+    progress: 14,
+    total: 14,
+    cats: [{
+      name: "Infrastructure Assurance",
+      svcs: ["SVC-IAS-01", "SVC-IAS-05", "SVC-IAS-02"]
+    }, {
+      name: "Vulnerability & Risk",
+      svcs: ["SVC-VRM-01", "SVC-VRM-02", "SVC-VRM-05", "SVC-WAV-01"]
+    }, {
+      name: "Firewall & Policy Risk",
+      svcs: ["SVC-FPR-01"]
+    }, {
+      name: "Managed Security & Infra",
+      svcs: ["SVC-MSI-01", "SVC-MSI-02", "SVC-MSI-03", "SVC-MSI-04", "SVC-MSI-05", "SVC-MSI-06"]
+    }, {
+      name: "CTEM Paketi",
+      svcs: ["SVC-CTEM"]
+    }]
+  }, {
+    tier: "faz2",
+    label: "Faz 2 · 3–6 Ay",
+    desc: "9 servis — platform kurulumu sonrası",
+    progress: 0,
+    total: 9,
+    cats: [{
+      name: "Infrastructure Assurance",
+      svcs: ["SVC-IAS-03", "SVC-IAS-04"]
+    }, {
+      name: "Vulnerability & Risk",
+      svcs: ["SVC-VRM-03"]
+    }, {
+      name: "External Attack Surface",
+      svcs: ["SVC-EAS-01", "SVC-EAS-02"]
+    }, {
+      name: "Firewall & Policy Risk",
+      svcs: ["SVC-FPR-02", "SVC-FPR-03"]
+    }, {
+      name: "Managed Security & Infra",
+      svcs: ["SVC-MSI-08", "SVC-MSI-09"]
+    }]
+  }, {
+    tier: "roadmap",
+    label: "Yol Haritası · 6–12 Ay",
+    desc: "7 servis — compliance, OT, SASE",
+    progress: 0,
+    total: 7,
+    cats: [{
+      name: "External Attack Surface",
+      svcs: ["SVC-EAS-03"]
+    }, {
+      name: "Compliance & Regulatory",
+      svcs: ["SVC-CRA-01", "SVC-CRA-02", "SVC-CRA-03"]
+    }, {
+      name: "Managed Security & Infra",
+      svcs: ["SVC-MSI-07"]
+    }]
+  }].map(phase => {
+    const tc = TIER[phase.tier];
+    const pct = Math.round(phase.progress / phase.total * 100);
+    return /*#__PURE__*/React.createElement("div", {
+      key: phase.tier,
+      style: {
+        background: tc.bg,
+        border: `1px solid ${tc.border}35`,
+        borderLeft: `4px solid ${tc.border}`,
+        borderRadius: 10,
+        padding: 13,
+        marginBottom: 10
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 800,
+        color: tc.border
+      }
+    }, phase.label), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: "#64748b"
+      }
+    }, phase.desc)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: "right"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 16,
+        fontWeight: 800,
+        color: tc.border
+      }
+    }, phase.progress, "/", phase.total), /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 80,
+        height: 4,
+        background: "#1e2440",
+        borderRadius: 2,
+        marginTop: 3
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: `${pct}%`,
+        height: "100%",
+        background: tc.border,
+        borderRadius: 2,
+        transition: "width .3s"
+      }
+    })))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "grid",
+        gridTemplateColumns: "repeat(5,1fr)",
+        gap: 7
+      }
+    }, phase.cats.map(cat => /*#__PURE__*/React.createElement("div", {
+      key: cat.name,
+      style: {
+        background: "#0f1225",
+        borderRadius: 6,
+        padding: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 8,
+        color: tc.border,
+        fontWeight: 700,
+        marginBottom: 5,
+        lineHeight: 1.3
+      }
+    }, cat.name), cat.svcs.length === 0 && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 9,
+        color: "#3d4a5c",
+        fontStyle: "italic"
+      }
+    }, "Tasar\u0131m a\u015Famas\u0131"), cat.svcs.map(c => {
+      const sv = svc(c) || {
+        code: c,
+        name: c,
+        ready: false,
+        tier: phase.tier
+      };
+      return /*#__PURE__*/React.createElement("div", {
+        key: c,
+        onClick: () => sv && setSelected(sv),
+        style: {
+          fontSize: 8.5,
+          color: sv.ready ? G : "#64748b",
+          background: sv.ready ? "#0d3320" : "#161b30",
+          borderRadius: 3,
+          padding: "2px 5px",
+          marginBottom: 3,
+          fontFamily: "monospace",
+          cursor: "pointer"
+        }
+      }, sv.ready ? "✓" : "·", " ", c);
+    })))));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#12172b",
+      border: `1px solid ${BORDER}`,
+      borderRadius: 10,
+      padding: 13,
+      marginTop: 6
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: G,
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, "M\xFC\u015Fteri Giri\u015F Noktalar\u0131 \u2014 Tipik Sat\u0131\u015F Yollar\u0131"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(4,1fr)",
+      gap: 8
+    }
+  }, [{
+    icon: "🔍",
+    title: "Riski görmek istiyor",
+    entry: "SVC-IAS-05",
+    next: "→ VRM-01/02",
+    c: "#38bdf8"
+  }, {
+    icon: "🛡️",
+    title: "Yönetim istiyor",
+    entry: "SVC-MSI-01",
+    next: "→ MSI-02..06",
+    c: G
+  }, {
+    icon: "⚠️",
+    title: "Açık kapatmak istiyor",
+    entry: "SVC-VRM-01",
+    next: "→ CTEM Paketi",
+    c: "#f59e0b"
+  }, {
+    icon: "📋",
+    title: "Uyumluluk lazım",
+    entry: "SVC-FPR-01",
+    next: "→ CRA-01/02",
+    c: "#a78bfa"
+  }].map(j => /*#__PURE__*/React.createElement("div", {
+    key: j.title,
+    style: {
+      background: "#1e2440",
+      border: `1px solid ${j.c}20`,
+      borderRadius: 8,
+      padding: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 18,
+      marginBottom: 5
+    }
+  }, j.icon), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: j.c,
+      fontWeight: 700,
+      marginBottom: 5
+    }
+  }, j.title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: "#94a3b8",
+      fontFamily: "monospace",
+      background: "#12172b",
+      borderRadius: 4,
+      padding: "3px 6px",
+      marginBottom: 5
+    }
+  }, j.entry), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: j.c
+    }
+  }, j.next))))))), view === "model" && /*#__PURE__*/React.createElement("div", {
+    style: { padding: "20px 14px", maxWidth: 900, margin: "0 auto" }
+  },
+    /* Başlık */
+    /*#__PURE__*/React.createElement("div", { style: { textAlign: "center", marginBottom: 28 } },
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 10, color: G, fontWeight: 700, letterSpacing: 3, fontFamily: "monospace" } }, "SIAFLEX · SECURITY SERVICES"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: "#fff", margin: "6px 0 4px" } }, "SecureStack Model"),
+      /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, color: "#475569" } }, "Katmanlı Güvenlik Servis Mimarisi · MVP & Yol Haritası")
+    ),
+    /* Legend */
+    /*#__PURE__*/React.createElement("div", { style: { display: "flex", gap: 16, justifyContent: "center", marginBottom: 20, flexWrap: "wrap" } },
+      [["#2BBD6E","MVP — İlk 3 ay"],["#84cc16","Faz 2 — 3–6 ay"],["#a78bfa","Yol Haritası — 6–12 ay"]].map(([c,l]) =>
+        /*#__PURE__*/React.createElement("div", { key: l, style: { display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#64748b" } },
+          /*#__PURE__*/React.createElement("div", { style: { width: 8, height: 8, borderRadius: 2, background: c } }),
+          l
+        )
+      )
+    ),
+    /* Katmanlar */
+    ...[
+      {
+        bg: "linear-gradient(90deg,#0a1f14,#0d1f1a)", acent: G, zone: "PROTECT",
+        kat: "KAT-6", name: "Managed Security & Infrastructure", sub: "Sürekli yönetim katmanı",
+        pills: [
+          { label: "Managed Firewall", code: "MSI-01", c: G },
+          { label: "Managed WAF", code: "MSI-02", c: G },
+          { label: "Managed LB", code: "MSI-03", c: G },
+          { label: "Managed Network", code: "MSI-04", c: G },
+          { label: "Managed SD-WAN", code: "MSI-05", c: G },
+          { label: "Managed VCF", code: "MSI-06", c: G },
+          { label: "Managed SASE", code: "MSI-07 · Roadmap", c: "#a78bfa" },
+        ],
+        badges: [["#0d3320",G,"● MVP"],["#1e1030","#a78bfa","● Roadmap"]]
+      },
+      {
+        bg: "linear-gradient(90deg,#0e1a2e,#0c1829)", acent: "#38bdf8", zone: "ASSESS",
+        kat: "KAT-1 + KAT-4", name: "Infrastructure & Policy Assurance", sub: "Konfigürasyon & risk analizi",
+        pills: [
+          { label: "IT/OT Discovery", code: "IAS-01", c: G },
+          { label: "Network Config", code: "IAS-02", c: G },
+          { label: "Health Check", code: "IAS-05", c: G },
+          { label: "FW Policy Risk", code: "FPR-01", c: G },
+          { label: "Net Security Config", code: "IAS-03 · Faz2", c: "#84cc16", dim: true },
+          { label: "VCF Hardening", code: "IAS-04 · Faz2", c: "#84cc16", dim: true },
+        ],
+        badges: [["#0d3320",G,"● MVP"],["#1c2a0a","#84cc16","● Faz 2"]]
+      },
+      {
+        bg: "linear-gradient(90deg,#0c1d30,#091826)", acent: "#38bdf8", zone: "DISCOVER",
+        kat: "KAT-2", name: "Vulnerability & Risk Management", sub: "Açık tespiti & önceliklendirme",
+        pills: [
+          { label: "External VA", code: "VRM-01", c: G },
+          { label: "Internal VA", code: "VRM-02", c: G },
+          { label: "Risk Validation", code: "VRM-05", c: G },
+          { label: "Web App VA", code: "WAV-01", c: G },
+          { label: "Vuln Lifecycle", code: "VRM-03 · Faz2", c: "#84cc16", dim: true },
+        ],
+        badges: [["#0d3320",G,"● MVP"],["#1c2a0a","#84cc16","● Faz 2"]]
+      },
+      {
+        bg: "linear-gradient(90deg,#1a1030,#160e28)", acent: "#a78bfa", zone: "DETECT",
+        kat: "KAT-3", name: "External Attack Surface & Brand Risk", sub: "Dışarıdan görünürlük & izleme",
+        pills: [
+          { label: "Attack Surface Mon.", code: "EAS-01 · Faz2", c: "#a78bfa", dim: true },
+          { label: "Brand Monitoring", code: "EAS-02 · Faz2", c: "#a78bfa", dim: true },
+          { label: "Digital Footprint", code: "EAS-03 · Roadmap", c: "#a78bfa", dim: true, dimmer: true },
+        ],
+        badges: [["#170e30","#a78bfa","● Faz 2"],["#1e1030","#a78bfa","● Roadmap"]]
+      },
+      {
+        bg: "linear-gradient(90deg,#140d20,#110a1c)", acent: "#f59e0b", zone: "COMPLY",
+        kat: "KAT-5", name: "Compliance & Regulatory", sub: "Uyumluluk & denetim hazırlığı",
+        pills: [
+          { label: "Regulatory Gap Analysis", code: "CRA-01", c: "#f59e0b", dim: true },
+          { label: "Audit-Ready Review", code: "CRA-02", c: "#f59e0b", dim: true },
+          { label: "OT/ICS Compliance", code: "CRA-03", c: "#f59e0b", dim: true },
+        ],
+        badges: [["#2a1500","#f59e0b","● Roadmap"]]
+      },
+    ].map((layer, li) =>
+      /*#__PURE__*/React.createElement("div", {
+        key: li,
+        style: {
+          background: layer.bg,
+          borderRadius: li === 0 ? "10px 10px 0 0" : li === 4 ? "0" : 0,
+          borderTop: `2px solid ${layer.acent}40`,
+          borderLeft: `3px solid ${layer.acent}`,
+          borderRight: `1px solid ${layer.acent}20`,
+          borderBottom: `1px solid ${layer.acent}15`,
+          display: "flex", alignItems: "stretch", minHeight: 76, marginBottom: 1
+        }
+      },
+        /* Sol label */
+        /*#__PURE__*/React.createElement("div", {
+          style: { width: 170, minWidth: 170, padding: "10px 14px", borderRight: `1px solid rgba(255,255,255,.06)`, display: "flex", flexDirection: "column", justifyContent: "center" }
+        },
+          /*#__PURE__*/React.createElement("div", { style: { fontSize: 8, color: layer.acent, fontWeight: 700, fontFamily: "monospace", letterSpacing: 1, opacity: .8 } }, `${layer.kat} · ${layer.zone}`),
+          /*#__PURE__*/React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: layer.acent, lineHeight: 1.3, marginTop: 3 } }, layer.name),
+          /*#__PURE__*/React.createElement("div", { style: { fontSize: 9, color: "#475569", marginTop: 2 } }, layer.sub)
+        ),
+        /* Pill'ler */
+        /*#__PURE__*/React.createElement("div", {
+          style: { flex: 1, display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", flexWrap: "wrap" }
+        },
+          ...layer.pills.map(p =>
+            /*#__PURE__*/React.createElement("div", {
+              key: p.code,
+              style: {
+                display: "flex", alignItems: "center", gap: 5,
+                background: `${p.c}10`,
+                border: `1px solid ${p.c}${p.dimmer ? "20" : p.dim ? "30" : "40"}`,
+                borderRadius: 6, padding: "5px 9px",
+                opacity: p.dimmer ? .45 : p.dim ? .7 : 1,
+                fontSize: 10, fontWeight: 500
+              }
+            },
+              /*#__PURE__*/React.createElement("div", { style: { width: 5, height: 5, borderRadius: "50%", background: p.c, flexShrink: 0 } }),
+              /*#__PURE__*/React.createElement("div", null,
+                /*#__PURE__*/React.createElement("div", { style: { color: "#e2e8f0", lineHeight: 1.2 } }, p.label),
+                /*#__PURE__*/React.createElement("div", { style: { fontSize: 8, color: p.c, fontFamily: "monospace", opacity: .7, marginTop: 1 } }, p.code)
+              )
+            )
+          )
+        ),
+        /* Faz badge'leri */
+        /*#__PURE__*/React.createElement("div", {
+          style: { display: "flex", flexDirection: "column", gap: 4, justifyContent: "center", padding: "0 12px", borderLeft: `1px solid rgba(255,255,255,.05)`, minWidth: 88 }
+        },
+          ...layer.badges.map(([bg, c, label]) =>
+            /*#__PURE__*/React.createElement("div", {
+              key: label,
+              style: { background: bg, color: c, border: `1px solid ${c}40`, borderRadius: 4, padding: "3px 8px", fontSize: 9, fontWeight: 700, fontFamily: "monospace", textAlign: "center", whiteSpace: "nowrap" }
+            }, label)
+          )
+        )
+      )
+    ),
+    /* CTEM Bar */
+    /*#__PURE__*/React.createElement("div", {
+      style: { background: "linear-gradient(90deg,#0a2016,#071a10)", border: `1px solid ${G}35`, borderTop: `3px solid ${G}`, borderRadius: "0 0 10px 10px", padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, marginTop: 0 }
+    },
+      /*#__PURE__*/React.createElement("div", { style: { whiteSpace: "nowrap" } },
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 8, color: G, fontWeight: 700, letterSpacing: 3, fontFamily: "monospace" } }, "ÇATI SERVİS"),
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 14, fontWeight: 800, color: "#fff", marginTop: 2 } }, "SVC-CTEM"),
+        /*#__PURE__*/React.createElement("div", { style: { fontSize: 8, color: "#475569", fontFamily: "monospace", marginTop: 1 } }, "Continuous Threat Exposure Management")
+      ),
+      /*#__PURE__*/React.createElement("div", { style: { flex: 1, display: "flex", alignItems: "center" } },
+        ...[
+          ["1","Scoping","IAS-01"],
+          ["2","Discovery","VRM-01/02"],
+          ["3","Prioritization","EPSS+KEV"],
+          ["4","Validation","VRM-05"],
+          ["5","Mobilization","VRM-03"],
+        ].flatMap(([n, name, svc], i, arr) => [
+          /*#__PURE__*/React.createElement("div", {
+            key: n,
+            style: { flex: 1, textAlign: "center", padding: "6px 4px", borderLeft: i === 0 ? "none" : `1px solid ${G}20` }
+          },
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 16, fontWeight: 900, color: G, lineHeight: 1 } }, n),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 9, fontWeight: 700, color: "#94a3b8", marginTop: 2 } }, name),
+            /*#__PURE__*/React.createElement("div", { style: { fontSize: 8, color: "#475569", fontFamily: "monospace", marginTop: 1 } }, svc)
+          ),
+          i < arr.length - 1 ? /*#__PURE__*/React.createElement("div", { key: `a${i}`, style: { color: G, opacity: .4, fontSize: 12 } }, "›") : null
+        ].filter(Boolean))
+      ),
+      /*#__PURE__*/React.createElement("div", { style: { background: "#0d3320", color: G, border: `1px solid ${G}40`, borderRadius: 4, padding: "5px 12px", fontSize: 9, fontWeight: 700, fontFamily: "monospace", whiteSpace: "nowrap" } }, "● MVP")
+    )
+  ), selected && /*#__PURE__*/React.createElement(DetailPanel, {
+    s: selected,
+    onClose: () => setSelected(null)
+  })));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+</script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siaflex — Managed IT/OT Infrastructure Framework</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --g:#2BBD6E; --dark:#080d1a; --card:#0f1420;
+  --border:rgba(255,255,255,.07); --text:#e2e8f0; --muted:#475569;
+}
+body{
+  background:var(--dark);
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  padding:36px 20px 60px;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(43,189,110,.08), transparent);
+  pointer-events:none;
+}
+
+/* ── TOP ── */
+.top{text-align:center;margin-bottom:44px;}
+.brand{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--g);letter-spacing:4px;margin-bottom:10px;}
+.title{font-size:26px;font-weight:700;color:#fff;margin-bottom:6px;}
+.subtitle{font-size:13px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.6;}
+
+/* ── MAIN LAYOUT ── */
+.frame{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:0;}
+
+/* ── STEP HEADER ── */
+.step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--g);color:#000;font-size:11px;font-weight:800;
+  flex-shrink:0;
+}
+
+/* ── ASSESSMENT BLOCK (Zorunlu) ── */
+.assess-block{
+  background:linear-gradient(135deg,#0a1f14 0%,#0c1a20 100%);
+  border:2px solid var(--g);
+  border-radius:14px 14px 0 0;
+  padding:24px 28px 20px;
+  position:relative;
+}
+.assess-block::after{
+  content:'ZORUNLU BAŞLANGIÇ';
+  position:absolute;top:-11px;left:28px;
+  background:var(--g);color:#000;
+  font-size:9px;font-weight:800;letter-spacing:2px;
+  padding:2px 10px;border-radius:20px;
+  font-family:'JetBrains Mono',monospace;
+}
+.assess-title{
+  display:flex;align-items:center;gap:10px;margin-bottom:16px;
+}
+.assess-title h2{font-size:17px;font-weight:700;color:#fff;}
+.assess-title .step-num{background:var(--g);}
+.assess-desc{font-size:12px;color:#94a3b8;margin-bottom:20px;line-height:1.6;max-width:680px;}
+
+.assess-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.assess-card{
+  background:rgba(43,189,110,.06);
+  border:1px solid rgba(43,189,110,.2);
+  border-radius:8px;padding:14px 16px;
+  transition:all .18s;cursor:default;
+}
+.assess-card:hover{background:rgba(43,189,110,.12);border-color:rgba(43,189,110,.4);}
+.assess-card .ac-icon{font-size:18px;margin-bottom:6px;}
+.assess-card .ac-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
+.assess-card .ac-code{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--g);opacity:.7;margin-bottom:5px;}
+.assess-card .ac-desc{font-size:11px;color:#64748b;line-height:1.5;}
+.assess-card .ac-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.tag{font-size:8px;background:rgba(43,189,110,.1);color:var(--g);border:1px solid rgba(43,189,110,.2);border-radius:3px;padding:2px 6px;font-family:'JetBrains Mono',monospace;}
+
+/* ── CONNECTOR ARROW ── */
+.connector{
+  display:flex;align-items:center;justify-content:center;
+  height:44px;background:linear-gradient(180deg,#0a1f14,#0e1a2e);
+  border-left:2px solid rgba(43,189,110,.2);
+  border-right:2px solid rgba(43,189,110,.2);
+  gap:10px;color:var(--g);font-size:11px;font-weight:600;
+  letter-spacing:1px;
+}
+.connector svg{flex-shrink:0;}
+
+/* ── ADD-ONS BLOCK ── */
+.addon-block{
+  background:linear-gradient(135deg,#0c1829 0%,#0a1520 100%);
+  border:1px solid rgba(56,189,248,.25);
+  border-top:2px solid #38bdf8;
+  border-left:2px solid rgba(43,189,110,.2);
+  border-right:2px solid rgba(43,189,110,.2);
+  padding:20px 28px;
+}
+.section-label{
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;
+}
+.section-label .badge{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  padding:3px 9px;border-radius:20px;letter-spacing:1px;
+}
+.badge-opt{background:#0c1f2e;color:#38bdf8;border:1px solid #38bdf840;}
+.section-label h3{font-size:14px;font-weight:700;color:#38bdf8;}
+
+.addon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.addon-item{
+  background:rgba(56,189,248,.04);
+  border:1px solid rgba(56,189,248,.15);
+  border-radius:7px;padding:11px 13px;
+  transition:all .15s;
+}
+.addon-item:hover{background:rgba(56,189,248,.09);border-color:rgba(56,189,248,.3);}
+.addon-item .ai-name{font-size:11px;font-weight:600;color:#e2e8f0;margin-bottom:2px;}
+.addon-item .ai-code{font-family:'JetBrains Mono',monospace;font-size:9px;color:#38bdf8;opacity:.7;}
+.addon-item .ai-desc{font-size:10px;color:#64748b;margin-top:4px;line-height:1.4;}
+
+/* ── VRM BLOCK ── */
+.vrm-block{
+  background:linear-gradient(135deg,#0e1d30 0%,#0b1626 100%);
+  border:1px solid rgba(56,189,248,.15);
+  border-left:2px solid rgba(43,189,110,.2);
+  border-right:2px solid rgba(43,189,110,.2);
+  padding:20px 28px;
+}
+.vrm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.vrm-item{
+  background:rgba(99,102,241,.05);
+  border:1px solid rgba(99,102,241,.2);
+  border-radius:7px;padding:11px 13px;
+}
+.vrm-item .vi-name{font-size:11px;font-weight:600;color:#e2e8f0;margin-bottom:2px;}
+.vrm-item .vi-code{font-family:'JetBrains Mono',monospace;font-size:9px;color:#818cf8;opacity:.8;}
+.vrm-item .vi-desc{font-size:10px;color:#64748b;margin-top:4px;line-height:1.4;}
+
+/* ── COMPLIANCE BLOCK ── */
+.comply-block{
+  background:linear-gradient(135deg,#160e28 0%,#110c22 100%);
+  border:1px solid rgba(167,139,250,.15);
+  border-left:2px solid rgba(43,189,110,.2);
+  border-right:2px solid rgba(43,189,110,.2);
+  padding:20px 28px;
+}
+.comply-desc{font-size:11px;color:#64748b;margin-bottom:14px;line-height:1.5;}
+.comply-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.comply-item{
+  background:rgba(167,139,250,.05);
+  border:1px solid rgba(167,139,250,.15);
+  border-radius:7px;padding:11px 13px;
+}
+.comply-item .ci-name{font-size:11px;font-weight:600;color:#e2e8f0;margin-bottom:2px;}
+.comply-item .ci-sub{font-size:9px;color:#a78bfa;opacity:.8;font-family:'JetBrains Mono',monospace;}
+.comply-item .ci-desc{font-size:10px;color:#64748b;margin-top:4px;line-height:1.4;}
+
+/* ── REPORTING ── */
+.report-block{
+  background:linear-gradient(135deg,#12172b 0%,#0f1326 100%);
+  border:1px solid rgba(255,255,255,.08);
+  border-left:2px solid rgba(43,189,110,.2);
+  border-right:2px solid rgba(43,189,110,.2);
+  padding:18px 28px;
+  display:flex;align-items:center;gap:20px;
+}
+.report-icon{font-size:28px;flex-shrink:0;}
+.report-content h3{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.report-content p{font-size:11px;color:#64748b;line-height:1.5;}
+.report-outputs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.output-chip{
+  font-size:10px;background:#1e2440;border:1px solid rgba(255,255,255,.1);
+  border-radius:5px;padding:4px 10px;color:#94a3b8;
+}
+
+/* ── DELIVERY MODEL (Ana seçim) ── */
+.delivery-connector{
+  display:flex;align-items:center;justify-content:center;
+  height:52px;
+  background:linear-gradient(180deg,#0f1326,#080d1a);
+  border-left:2px solid rgba(43,189,110,.2);
+  border-right:2px solid rgba(43,189,110,.2);
+  gap:8px;
+}
+.delivery-connector span{
+  font-size:11px;color:var(--g);font-weight:700;letter-spacing:2px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ── DELIVERY OPTIONS ── */
+.delivery-block{
+  border:2px solid rgba(43,189,110,.35);
+  border-radius:0 0 14px 14px;
+  overflow:hidden;
+}
+.delivery-header{
+  background:linear-gradient(135deg,#0a1f14,#071a10);
+  padding:16px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.delivery-header h2{font-size:15px;font-weight:700;color:#fff;}
+.delivery-header p{font-size:11px;color:#64748b;margin-top:3px;}
+.delivery-note{font-size:10px;color:var(--g);font-style:italic;}
+
+.delivery-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+
+.d-option{
+  padding:22px 20px;
+  border-right:1px solid rgba(43,189,110,.12);
+  transition:all .2s;cursor:default;
+  position:relative;
+}
+.d-option:last-child{border-right:none;}
+.d-option:hover{background:rgba(43,189,110,.04);}
+
+.d-option .d-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;font-weight:800;
+  color:rgba(43,189,110,.2);
+  position:absolute;top:16px;right:16px;
+  line-height:1;
+}
+.d-option .d-icon{font-size:22px;margin-bottom:10px;}
+.d-option .d-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.d-option .d-sub{font-size:10px;color:var(--g);font-family:'JetBrains Mono',monospace;margin-bottom:10px;font-weight:600;}
+.d-option .d-desc{font-size:11px;color:#64748b;line-height:1.6;margin-bottom:12px;}
+.d-option .d-items{display:flex;flex-direction:column;gap:4px;}
+.d-item{
+  display:flex;align-items:flex-start;gap:6px;
+  font-size:10px;color:#94a3b8;line-height:1.4;
+}
+.d-item::before{content:'›';color:var(--g);flex-shrink:0;margin-top:1px;}
+
+.d-option.highlight{
+  background:linear-gradient(135deg,rgba(43,189,110,.07),rgba(43,189,110,.03));
+}
+.d-option.highlight .d-num{color:rgba(43,189,110,.35);}
+.best-badge{
+  display:inline-block;margin-top:12px;
+  font-size:8px;font-weight:800;letter-spacing:1px;
+  background:var(--g);color:#000;border-radius:4px;
+  padding:3px 8px;font-family:'JetBrains Mono',monospace;
+}
+
+/* ── LIFECYCLE BAR ── */
+.lifecycle-bar{
+  max-width:960px;margin:16px auto 0;
+  background:linear-gradient(135deg,#0a1f14,#071a10);
+  border:1px solid rgba(43,189,110,.3);
+  border-radius:10px;padding:16px 24px;
+  display:flex;align-items:center;gap:0;
+}
+.lc-label{
+  padding-right:20px;border-right:1px solid rgba(43,189,110,.2);margin-right:20px;white-space:nowrap;
+}
+.lc-label .l1{font-size:9px;color:var(--g);font-weight:700;letter-spacing:3px;font-family:'JetBrains Mono',monospace;}
+.lc-label .l2{font-size:13px;font-weight:700;color:#fff;margin-top:2px;}
+.lc-phases{display:flex;flex:1;align-items:center;}
+.lc-phase{
+  flex:1;text-align:center;
+  padding:6px 4px;
+  border-right:1px solid rgba(43,189,110,.15);
+}
+.lc-phase:last-child{border-right:none;}
+.lc-phase .lp-icon{font-size:16px;margin-bottom:3px;}
+.lc-phase .lp-name{font-size:9px;font-weight:700;color:var(--g);}
+.lc-phase .lp-sub{font-size:8px;color:#475569;margin-top:1px;}
+.lc-arrow{color:rgba(43,189,110,.35);font-size:14px;padding:0 2px;}
+
+/* ── FOOTER ── */
+.footer{text-align:center;margin-top:32px;font-size:10px;color:#334155;font-family:'JetBrains Mono',monospace;letter-spacing:1px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">SIAFLEX · MANAGED IT/OT INFRASTRUCTURE</div>
+  <div class="title">IT/OT Infrastructure Service Framework</div>
+  <div class="subtitle">Assessment'tan başlayan, müşterinin ihtiyacına göre şekillenen, lifecycle boyunca süren yönetim modeli</div>
+</div>
+
+<div class="frame">
+
+  <!-- ① ASSESSMENT — ZORUNLU -->
+  <div class="assess-block">
+    <div class="assess-title">
+      <div class="step-num">1</div>
+      <h2>IT/OT Discovery & Assessment</h2>
+    </div>
+    <p class="assess-desc">
+      Tüm servis ilişkisinin başlangıç noktası. Sıfırdan gelen müşteri de, çalışan sistemi olan müşteri de aynı kapıdan girer.
+      Envanter çıkar, mevcut durum analiz edilir, risk haritası oluşturulur.
+    </p>
+    <div class="assess-grid">
+      <div class="assess-card">
+        <div class="ac-icon">🔍</div>
+        <div class="ac-name">IT/OT Discovery & Inventory</div>
+        <div class="ac-code">SVC-IAS-01</div>
+        <div class="ac-desc">Tüm varlıkların keşfi — IP, MAC, OS, servis, OT protokolleri. Bilinmeyen varlık korunamaz.</div>
+        <div class="ac-tags"><span class="tag">IT</span><span class="tag">OT</span><span class="tag">Agentless</span></div>
+      </div>
+      <div class="assess-card">
+        <div class="ac-icon">🏥</div>
+        <div class="ac-name">Infrastructure Health Check</div>
+        <div class="ac-code">SVC-IAS-05</div>
+        <div class="ac-desc">Ağ, güvenlik, compute, depolama katmanları sağlık değerlendirmesi. C-level özet + teknik rapor.</div>
+        <div class="ac-tags"><span class="tag">C-Level</span><span class="tag">Kapasite</span><span class="tag">Risk</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONNECTOR -->
+  <div class="connector">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 10l6 6 6-6" stroke="#2BBD6E" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span>Assessment tamamlandı — kapsamı belirle</span>
+  </div>
+
+  <!-- ADD-ONS: Config Assurance -->
+  <div class="addon-block">
+    <div class="section-label">
+      <span class="badge badge-opt">OPSİYONEL</span>
+      <h3>Configuration Assurance Add-Ons</h3>
+    </div>
+    <div class="addon-grid">
+      <div class="addon-item">
+        <div class="ai-name">Network Config Assurance</div>
+        <div class="ai-code">SVC-IAS-02</div>
+        <div class="ai-desc">Switch, router, WAN — vendor best practice ve standart uyumluluk analizi.</div>
+      </div>
+      <div class="addon-item">
+        <div class="ai-name">Network Security Config</div>
+        <div class="ai-code">SVC-IAS-03</div>
+        <div class="ai-desc">Firewall rule analizi, IT/OT segmentasyon, DMZ güvenlik kontrolü.</div>
+      </div>
+      <div class="addon-item">
+        <div class="ai-name">Virtualization Config Assurance</div>
+        <div class="ai-code">SVC-IAS-04</div>
+        <div class="ai-desc">VMware VCF/vSphere hardening — ESXi, vCenter, NSX konfigürasyon değerlendirmesi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vulnerability & Risk -->
+  <div class="vrm-block">
+    <div class="section-label">
+      <span class="badge badge-opt">OPSİYONEL</span>
+      <h3 style="color:#818cf8">Vulnerability & Risk Assessment</h3>
+    </div>
+    <div class="vrm-grid">
+      <div class="vrm-item">
+        <div class="vi-name">External Vulnerability Assessment</div>
+        <div class="vi-code">SVC-VRM-01</div>
+        <div class="vi-desc">İnternetten görünen IP'ler — OpenVAS + Nuclei + EPSS/KEV önceliklendirme.</div>
+      </div>
+      <div class="vrm-item">
+        <div class="vi-name">Internal Vulnerability Assessment</div>
+        <div class="vi-code">SVC-VRM-02</div>
+        <div class="vi-desc">VPN veya DC erişimiyle tüm internal varlıkların CVE taraması.</div>
+      </div>
+      <div class="vrm-item">
+        <div class="vi-name">Web App Vulnerability Assessment</div>
+        <div class="vi-code">SVC-WAV-01</div>
+        <div class="vi-desc">OWASP Top 10 — ZAP + Nikto + Nuclei web templates. API dahil.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compliance -->
+  <div class="comply-block">
+    <div class="section-label">
+      <span class="badge" style="background:#1e1030;color:#a78bfa;border:1px solid #a78bfa40;">OPSİYONEL</span>
+      <h3 style="color:#a78bfa">Compliance & Regulatory Mapping</h3>
+    </div>
+    <p class="comply-desc">Müşterinin sektörüne ve zorunluluklarına göre takip etmesi gereken regülasyonlar belirlenir. Assessment verisi bu adımın ham girdisidir.</p>
+    <div class="comply-grid">
+      <div class="comply-item">
+        <div class="ci-name">KVKK / ISO 27001</div>
+        <div class="ci-sub">CRA-01</div>
+        <div class="ci-desc">Gap analizi ve uyumluluk yol haritası.</div>
+      </div>
+      <div class="comply-item">
+        <div class="ci-name">BDDK / EPDK / SPK</div>
+        <div class="ci-sub">CRA-01</div>
+        <div class="ci-desc">Sektörel regülasyon haritalama ve denetim hazırlığı.</div>
+      </div>
+      <div class="comply-item">
+        <div class="ci-name">OT/ICS — IEC 62443</div>
+        <div class="ci-sub">CRA-03</div>
+        <div class="ci-desc">Endüstriyel kontrol sistemleri uyumluluk değerlendirmesi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reporting -->
+  <div class="report-block">
+    <div class="report-icon">📊</div>
+    <div class="report-content">
+      <h3>Reporting & Outcomes</h3>
+      <p>Assessment ve seçilen add-on'lardan elde edilen tüm bulgular konsolide edilir. Her çıktı iki katmanda sunulur: teknik ekip için detay raporu, yönetim için C-level özeti.</p>
+      <div class="report-outputs">
+        <div class="output-chip">📋 Teknik Bulgu Raporu</div>
+        <div class="output-chip">👔 C-Level Yönetici Özeti</div>
+        <div class="output-chip">🗺️ Risk Haritası</div>
+        <div class="output-chip">📐 Aksiyon Planı</div>
+        <div class="output-chip">⚠️ Compliance Gap Raporu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONNECTOR → Müşteri Seçer -->
+  <div class="delivery-connector">
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d="M8 2v16M2 12l6 6 6-6" stroke="#2BBD6E" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span>MÜŞTERİ İHTİYACINA GÖRE TESLİMAT MODELİ SEÇİLİR</span>
+  </div>
+
+  <!-- ② DELIVERY MODELS -->
+  <div class="delivery-block">
+    <div class="delivery-header">
+      <div>
+        <h2>Teslimat Modeli — Müşteri Seçer</h2>
+        <p>Aynı assessment çıktısından üç farklı yolda devam edilebilir. Müşteri ihtiyaç ve bütçesine göre seçer, dilediği zaman tier değiştirebilir.</p>
+      </div>
+      <span class="delivery-note">Tüm modeller yıllık abonelik bazlı</span>
+    </div>
+    <div class="delivery-options">
+
+      <!-- Model A -->
+      <div class="d-option">
+        <div class="d-num">A</div>
+        <div class="d-icon">📄</div>
+        <div class="d-name">Danışmanlık & Takip</div>
+        <div class="d-sub">Advisory Mode</div>
+        <div class="d-desc">Bulguları biz raporlarız, nasıl kapatılacağını anlatırız. Uygulama müşteri ekibine aittir, biz takip eder ve retest yaparız.</div>
+        <div class="d-items">
+          <div class="d-item">Periyodik tarama ve raporlama</div>
+          <div class="d-item">Remediation danışmanlığı ve önceliklendirme</div>
+          <div class="d-item">Aksiyon takibi ve retest</div>
+          <div class="d-item">Yıllık 10 teknik destek hakkı</div>
+        </div>
+      </div>
+
+      <!-- Model B — Önerilen -->
+      <div class="d-option highlight">
+        <div class="d-num">B</div>
+        <div class="d-icon">🛡️</div>
+        <div class="d-name">Managed Service</div>
+        <div class="d-sub">Managed Mode — Seçili Kapsam</div>
+        <div class="d-desc">Müşteri istediği kategoriyi managed servise alır. Sadece L3 ağ yönetimi, sadece firewall, sadece vulnerability — ya da birkaçı birden.</div>
+        <div class="d-items">
+          <div class="d-item">Seçili bileşenlerin tam operasyon yönetimi</div>
+          <div class="d-item">Değişiklik yönetimi ve SLA garantisi</div>
+          <div class="d-item">Periyodik review ve optimizasyon</div>
+          <div class="d-item">KAT-6 servislerinden a la carte seçim</div>
+        </div>
+        <div class="best-badge">ÖNERİLEN</div>
+      </div>
+
+      <!-- Model C -->
+      <div class="d-option">
+        <div class="d-num">C</div>
+        <div class="d-icon">🔄</div>
+        <div class="d-name">Full Managed Lifecycle</div>
+        <div class="d-sub">Full Ops Mode</div>
+        <div class="d-desc">Tüm IT/OT altyapısının operasyon sorumluluğu Siaflex'e devredilir. Müşteri sadece iş sonuçlarına odaklanır.</div>
+        <div class="d-items">
+          <div class="d-item">End-to-end altyapı operasyonu</div>
+          <div class="d-item">Proaktif izleme ve müdahale</div>
+          <div class="d-item">Vulnerability lifecycle tam yönetim</div>
+          <div class="d-item">Siaflex müşterinin IT departmanı olur</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /frame -->
+
+<!-- LIFECYCLE BAR -->
+<div class="lifecycle-bar">
+  <div class="lc-label">
+    <div class="l1">CUSTOMER LIFECYCLE</div>
+    <div class="l2">Siaflex ile Müşteri Yolculuğu</div>
+  </div>
+  <div class="lc-phases">
+    <div class="lc-phase">
+      <div class="lp-icon">🔍</div>
+      <div class="lp-name">Assess</div>
+      <div class="lp-sub">Discovery & Health</div>
+    </div>
+    <div class="lc-arrow">›</div>
+    <div class="lc-phase">
+      <div class="lp-icon">📐</div>
+      <div class="lp-name">Design</div>
+      <div class="lp-sub">Scope & Plan</div>
+    </div>
+    <div class="lc-arrow">›</div>
+    <div class="lc-phase">
+      <div class="lp-icon">🛡️</div>
+      <div class="lp-name">Protect</div>
+      <div class="lp-sub">Managed Ops</div>
+    </div>
+    <div class="lc-arrow">›</div>
+    <div class="lc-phase">
+      <div class="lp-icon">📊</div>
+      <div class="lp-name">Monitor</div>
+      <div class="lp-sub">Continuous Review</div>
+    </div>
+    <div class="lc-arrow">›</div>
+    <div class="lc-phase">
+      <div class="lp-icon">⚡</div>
+      <div class="lp-name">Optimize</div>
+      <div class="lp-sub">Remediation & Tuning</div>
+    </div>
+    <div class="lc-arrow">›</div>
+    <div class="lc-phase">
+      <div class="lp-icon">🔁</div>
+      <div class="lp-name">Renew</div>
+      <div class="lp-sub">Yıllık Döngü</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">SIAFLEX SECURITY SERVICES · MANAGED IT/OT INFRASTRUCTURE FRAMEWORK · v1.0 · 2026 · GİZLİ VE TİCARİ</div>
+
+</body>
+</html>
